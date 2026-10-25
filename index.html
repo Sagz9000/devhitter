@@ -419,7 +419,7 @@ td.mono {
 <article>
   <h1>Inside a 216-Extension VS Code Marketplace Campaign Delivering AsyncRAT</h1>
   <div class="subtitle">
-    Tracking a six-month operation across 201 publisher accounts, a 150-extension sleeper wave, live operator sessions, and the "Pebble" (<code>@pxbbz</code>) "dev hitter" campaign targeting Roblox studios.
+    Tracking a six-month operation across 201 publisher accounts, a 150-extension sleeper wave, live operator sessions on TCP 56001, and the "Pebble" (<code>@pxbbz</code>) "dev hitter" campaign targeting Roblox studios.
   </div>
 
   <div class="byline">
@@ -431,7 +431,7 @@ td.mono {
     Since at least May 2026, a small, hands-on crew has run an aggressive malware distribution campaign on the Visual Studio Code Marketplace targeting game developers and general software engineers. <b>The campaign remains actively operational today:</b> as recently as October 24, 2026, the operators were observed deploying fresh delivery hosts, re-arming extensions, and actively piloting live command-and-control sessions. Across six months, the operation has published 216 extension versions under 201 distinct publisher accounts, rotating from bundled npm post-install scripts to a fleet of 150 empty "sleeper" extensions and an Ed25519-signed script-delivery protocol.
   </p>
   <p>
-    Unlike most malicious VS Code extension campaigns that run an automated infostealer and exit, this group deploys a ConfuserEx-packed AsyncRAT implant (internal assembly name <code>Xdggym</code>) and pilots infected machines manually. My sandbox recorded 64 detonations that reached their command-and-control (C2) servers on TCP port <code>56001</code>. In 13 of those sessions, an operator at the panel pushed interactive plugins to the host; in another 12 runs, an automated server rule recognized the sandbox hardware ID and killed the implant within three seconds of check-in.
+    Unlike most malicious VS Code extension campaigns that run an automated infostealer and exit, this group deploys a ConfuserEx-packed AsyncRAT implant (internal assembly name <code>Xdggym</code>) and pilots infected machines manually. My sandbox recorded 64 detonations that reached their command-and-control (C2) servers on TCP port <code>56001</code>. In 13 of those sessions, an operator at the panel pushed interactive plugins to the host. In another 12 runs, an automated server rule recognized the sandbox hardware ID and killed the implant within three seconds of check-in.
   </p>
   <p>
     During four of the interactive sessions, the operators opened chat windows or dialog boxes on the sandbox desktop. On Saturday, October 24, 2026, within 35 seconds of a batch stager from <code>pebblexvale[.]com/pxbbzVkahQ5VT.bat</code> injecting the RAT into <code>explorer.exe</code> and connecting to <code>216[.]107[.]137[.]77:56001</code>, the operator opened a hidden desktop (HVNC) shell and launched a window titled <code>Chat with H@cker</code>:
@@ -504,7 +504,7 @@ td.mono {
           <td class="mono">3d576a5f698f86c72d046f424a8a41b3</td>
           <td>Oct 02, Oct 06</td>
           <td>Remote Desktop</td>
-          <td>Visible desktop control; operator launches <code>chrome.exe</code> and <code>Code.exe</code> and types into local windows.</td>
+          <td>Visible desktop control, with the operator launching <code>chrome.exe</code> and <code>Code.exe</code> and types into local windows.</td>
         </tr>
         <tr>
           <td class="mono">00e41f4a0fd50dfb83b01be06b3cc108</td>
@@ -606,7 +606,7 @@ td.mono {
           <td class="mono">ab389ed6431d49986712b549511df12f</td>
           <td>Sep 15 to Sep 21</td>
           <td>Power / Uninstall (Wave-1 Set)</td>
-          <td>Triggers immediate uninstall or shutdown; also sent automatically within 1 to 3 seconds to blocklisted sandbox HWIDs.</td>
+          <td>Triggers immediate uninstall or shutdown, and was also sent automatically within 1 to 3 seconds to blocklisted sandbox HWIDs.</td>
         </tr>
       </tbody>
     </table>
@@ -678,15 +678,15 @@ td.mono {
     <li><b>Why the attribution lead holds either way:</b> Regardless of whether one operator typed both sides or a co-operator typed the <code>"Me:"</code> lines over Remote Desktop, the string <code>"Pebble"</code> was introduced entirely from the C2 connection on October 6, eighteen days before the crew registered <code>pebblexvale[.]com</code> and served <code>pxbbzVkahQ5VT.bat</code>.</li>
   </ul>
   <p>
-    Across all nine hands-on sessions, operator timestamps clustered strictly between 13:40 and 02:42 UTC (with zero activity between 03:00 and 13:00 UTC), and 156 of the 216 Marketplace versions were published in two evening windows (21:00 to 22:00 UTC and 01:00 to 02:00 UTC), fitting US afternoon and evening hours (09:00 to 23:00 EDT), weekends included. Whenever they recognized the sandbox, they never ran credential dumpers, <code>lsass</code> access, or <code>whoami</code> / <code>systeminfo</code> commands; instead, they inspected VS Code or IDA Free, taunted the lab, and uninstalled or shut the VM down within 1 to 10 minutes.
+    Across all nine hands-on sessions, operator timestamps clustered strictly between 13:40 and 02:42 UTC (with zero activity between 03:00 and 13:00 UTC), and 156 of the 216 Marketplace versions were published in two evening windows (21:00 to 22:00 UTC and 01:00 to 02:00 UTC), fitting US afternoon and evening hours (09:00 to 23:00 EDT), weekends included. Whenever they recognized the sandbox, they never ran credential dumpers, <code>lsass</code> access, or <code>whoami</code> / <code>systeminfo</code> commands. Instead, they inspected VS Code or IDA Free, taunted the lab, and uninstalled or shut the VM down within 1 to 10 minutes.
   </p>
 
   <h3>Decrypted TLS 1.3 Session &amp; cPanel Verification (<code>LKKStuner.linkintree</code>, October 24, 2026)</h3>
   <p>
-    During the 15:14 UTC detonation of <code>LKKStuner.linkintree</code> (version 1.0.2) on October 24, the sandbox <code>SSLKEYLOGFILE</code> recorder (<code>keylogs/1792853892145.log</code>, 148,958 bytes; alongside <code>keylogs/1792850105388.log</code>, 4,690 bytes from the <code>studiotask-app</code> run) captured the TLS 1.3 session secrets across 190 encrypted connections. Decrypting the PCAP separated the malware's automated traffic from my own interactive browser check of the stager IP during that run:
+    During the 15:14 UTC detonation of <code>LKKStuner.linkintree</code> (version 1.0.2) on October 24, the sandbox <code>SSLKEYLOGFILE</code> recorder (<code>keylogs/1792853892145.log</code>, 148,958 bytes, alongside <code>keylogs/1792850105388.log</code>, 4,690 bytes from the <code>studiotask-app</code> run) captured the TLS 1.3 session secrets across 190 encrypted connections. Decrypting the PCAP separated the malware's automated traffic from my own interactive browser check of the stager IP during that run:
   </p>
   <ol>
-    <li><b>Malware Stager Pull &amp; C2 Stream:</b> The extension fetched <code>GET hxxp://pebblexvale[.]com/pxbbzVkahQ5VT.bat</code> from <code>192[.]142[.]48[.]98</code> twice with an empty User-Agent string (the first TCP stream stalled after 12 packets; the second downloaded the 490 KB batch file across 386 packets) and then opened the pinned-certificate AsyncRAT stream to <code>216[.]107[.]137[.]77:56001</code>.</li>
+    <li><b>Malware Stager Pull &amp; C2 Stream:</b> The extension fetched <code>GET hxxp://pebblexvale[.]com/pxbbzVkahQ5VT.bat</code> from <code>192[.]142[.]48[.]98</code> twice with an empty User-Agent string (the first TCP stream stalled after 12 packets, while the second downloaded the 490 KB batch file across 386 packets) and then opened the pinned-certificate AsyncRAT stream to <code>216[.]107[.]137[.]77:56001</code>.</li>
     <li><b>Interactive Browser Check of <code>192[.]142[.]48[.]98</code>:</b> While interacting with that sandbox run, I typed <code>192[.]142[.]48[.]98</code> into the Chrome address bar (<code>chrome.exe</code>, PID 6456), firing omnibox autocomplete queries for <code>192[.]142[.]48[.]98</code> and <code>192[.]142[.]48[.]98:</code> before loading <code>hxxp://192[.]142[.]48[.]98/</code>.</li>
     <li><b>cPanel Default Page:</b> Accessing the IP without a virtual-host header returned a cPanel default landing page (<code>/cgi-sys/defaultwebpage.cgi</code>, <code>/img-sys/powered_by_cpanel.svg</code>, <code>IP_changed.png</code>, <code>server_misconfigured.png</code>, and the cPanel <code>wsidchk</code> / <code>pdata</code> redirect), followed by a click-through to <code>hxxps://www[.]cpanel[.]net/</code>.</li>
   </ol>
@@ -845,7 +845,7 @@ td.mono {
       <tr><td class="mono">2026-09-07</td><td class="mono">NotePadExtra.notepadextraplus 1.0.1</td><td class="mono">2</td><td>Bundled <code>boardflow</code> npm loader + <code>lnterstudios[.]org/846385d443.bat</code></td></tr>
       <tr><td class="mono">2026-09-08</td><td class="mono">LaunchAppsLLC.launchdesk-app 1.0.0 to 1.0.1</td><td class="mono">2</td><td>Bundled <code>vs-modules/resources.js</code> &rarr; <code>boardflow[.]uk/package-update</code></td></tr>
       <tr><td class="mono">2026-09-08</td><td class="mono">TrellKhan.devora 1.0.2</td><td class="mono">1</td><td>Bundled loader + <code>:56001</code> C2 + <code>pxbble[.]com/b1f87428620729e52.bat</code></td></tr>
-      <tr><td class="mono">2026-09-08</td><td class="mono">BadginLNN.badgerposts 1.0.1</td><td class="mono">3</td><td>Bundled loader + <code>lnterstudios[.]org</code> (v1.0.1) and <code>pxbble[.]com</code> (v1.0.2); cited on Roblox DevForum as used in developer account takeovers rebranded to Pixel Studios</td></tr>
+      <tr><td class="mono">2026-09-08</td><td class="mono">BadginLNN.badgerposts 1.0.1</td><td class="mono">3</td><td>Bundled loader + <code>lnterstudios[.]org</code> (v1.0.1) and <code>pxbble[.]com</code> (v1.0.2). Cited on Roblox DevForum as used in developer account takeovers rebranded to Pixel Studios</td></tr>
       <tr><td class="mono">2026-09-08</td><td class="mono">MicroLLC.typewriter-keyin 1.0.1</td><td class="mono">1</td><td>Bundled <code>boardflow</code> npm loader + <code>lnterstudios[.]org/7f82614a.bat</code></td></tr>
       <tr><td class="mono">2026-09-08</td><td class="mono">HypeShowG.fastmusicgen 1.0.1</td><td class="mono">1</td><td>Bundled loader + <code>216[.]107[.]139[.]88:56001</code> + <code>pxbble[.]com/b1f87428620729e52.bat</code></td></tr>
       <tr><td class="mono">2026-09-09</td><td class="mono">MusicCreates.musicicgen 1.0.1</td><td class="mono">1</td><td>Byte-identical <code>install.js</code> seed (<code>_0x53192b</code>) to <code>monkeyfont</code> + <code>pxbble[.]com</code></td></tr>
@@ -985,7 +985,7 @@ td.mono {
       </div>
       <div class="cp-lock">
         <span class="lock-label">C2 &amp; Panel Link</span>
-        Same victim HWIDs and plugin hashes across servers; live chat sessions on <code>.137.77</code> dropped the "Pebble" handle.
+        Same victim HWIDs and plugin hashes across servers, with live chat sessions on <code>.137.77</code> dropped the "Pebble" handle.
       </div>
     </div>
   </div>
@@ -998,7 +998,7 @@ td.mono {
   </p>
   <ol>
     <li><b>Un-scrubbed <code>Frux-Board</code> command in unrelated extensions:</b> Four extensions pretending to be font, music, and typewriter utilities (<code>FontingFonts.monkeyfont</code>, <code>MusicCreates.musicicgen</code>, <code>MicroLLC.typewriter-keyin</code>, and <code>TypinKey.typewritin-keyal</code>) all register <code>"onCommand:Frux-Board.open"</code> in <code>package.json</code>, left over from cloning <code>AgendaStudios.frux-board</code>.</li>
-    <li><b>Shared <code>javascript-obfuscator</code> seed and hand-written wrapper lines:</b> Twelve extensions carry the exact 5-space-padded import <code>const cp     = require('child_process');</code> at <code>src/extension.js:L6</code> and <code>const { spawn } = require('child_process');</code> at <code>src/patt.js:L5</code>. Inside <code>node_modules/boardflow/install.js</code>, <code>monkeyfont</code> (ext 895860) and <code>musicicgen</code> (ext 891611) carry a byte-identical obfuscated file generated from the same build instance (seed <code>_0x53192b=_0x57a6</code>), while <code>typewriter-keyin</code> (ext 733647) uses a second build from the same obfuscator configuration (seed <code>_0x4891a6=_0x1e1e</code>):</li>
+    <li><b>Shared <code>javascript-obfuscator</code> seed and hand-written wrapper lines:</b> Twelve extensions carry the exact 5-space-padded import <code>const cp     = require('child_process')</code> at <code>src/extension.js:L6</code> and <code>const { spawn } = require('child_process')</code> at <code>src/patt.js:L5</code>. Inside <code>node_modules/boardflow/install.js</code>, <code>monkeyfont</code> (ext 895860) and <code>musicicgen</code> (ext 891611) carry a byte-identical obfuscated file generated from the same build instance (seed <code>_0x53192b=_0x57a6</code>), while <code>typewriter-keyin</code> (ext 733647) uses a second build from the same obfuscator configuration (seed <code>_0x4891a6=_0x1e1e</code>):</li>
   </ol>
   <pre>// Verbatim from FontingFonts.monkeyfont &amp; MusicCreates.musicicgen
 // File: node_modules/boardflow/install.js (Line 1, shared seed _0x53192b=_0x57a6)
@@ -1063,11 +1063,11 @@ process.env.PACKAGE_UPDATE_URL || "hxxp://boardflow[.]uk/package-update";</pre>
   <pre>Offset (Hex)         Bytes / Value                                 Meaning
 -----------------------------------------------------------------------------------------------------------------
 0x00000000           DE AD BE CA FE BA EF                          7-byte crypter marker
-0x00000007           E8 &lt;rel32&gt;                                    CALL over the embedded instance; pushes offset 0x0C
+0x00000007           E8 &lt;rel32&gt;                                    CALL over the embedded instance, pushing offset 0x0C
 0x0000000C           &lt;DWORD instance_len&gt;                          Repeats &lt;rel32&gt; (matches the payload build size)
 0x00000010           &lt;16-byte key&gt;                                 Per-build key field
 0x00000020           &lt;Encrypted instance&gt;                          Encrypted Donut instance + .NET payload
-0x0000000C + &lt;rel32&gt; 59 48 83 E4 F0 48 89 4C 24 08 57 56 53 ...    pop rcx; and rsp, -16; (13,436-byte Donut x64
+0x0000000C + &lt;rel32&gt; 59 48 83 E4 F0 48 89 4C 24 08 57 56 53 ...    pop rcx, and rsp, -16 (13,436-byte Donut x64
                                                                    PIC loader stub, SHA-256:
                                                                    714aaaabe16086b0f7d089d10a402f7a33691eb6a36118ba632a6256b283beec)</pre>
 
@@ -1090,7 +1090,7 @@ process.env.PACKAGE_UPDATE_URL || "hxxp://boardflow[.]uk/package-update";</pre>
       <tr><td class="mono">286,192</td><td class="mono">2</td><td>Sep 25</td><td>Smaller payload build beaconing to <code>185[.]94[.]29[.]79:56001</code></td></tr>
       <tr><td class="mono">431,355</td><td class="mono">2</td><td>Oct 02, Oct 06</td><td>Used in the <code>framemap-dev</code> and Oct 6 chat sessions</td></tr>
       <tr><td class="mono">432,720</td><td class="mono">7</td><td>Oct 05 to Oct 23</td><td>Used in <code>studiodocs-app</code> and subsequent Oct runs</td></tr>
-      <tr><td class="mono">300,439</td><td class="mono">1</td><td>Oct 24</td><td><code>studiotask-app 1.2.1</code>; coincides with the Oct 24 plugin-set rebuild</td></tr>
+      <tr><td class="mono">300,439</td><td class="mono">1</td><td>Oct 24</td><td><code>studiotask-app 1.2.1</code>, coinciding with the Oct 24 plugin-set rebuild</td></tr>
     </tbody>
   </table>
 
@@ -1119,14 +1119,14 @@ process.env.PACKAGE_UPDATE_URL || "hxxp://boardflow[.]uk/package-update";</pre>
       </tr>
     </thead>
     <tbody>
-      <tr><td class="mono">RAT C2 (TCP 56001)</td><td class="mono">216[.]107[.]137[.]77:56001</td><td>Datacamp Limited; active Oct 2 to Oct 24, 2026 (live)</td></tr>
-      <tr><td class="mono">RAT C2 (TCP 56001-56003)</td><td class="mono">216[.]107[.]139[.]88:56001</td><td>Latitude.sh (same <code>216[.]107[.]136[.]0/22</code> as <code>.137.77</code>); active Sep 3 to Sep 24</td></tr>
-      <tr><td class="mono">RAT C2 (TCP 56001-56003)</td><td class="mono">185[.]94[.]29[.]79:56001</td><td>Active Sep 15 to Sep 25; shared plugins with <code>.139.88</code></td></tr>
+      <tr><td class="mono">RAT C2 (TCP 56001)</td><td class="mono">216[.]107[.]137[.]77:56001</td><td>Datacamp Limited, active Oct 2 to Oct 24, 2026 (live)</td></tr>
+      <tr><td class="mono">RAT C2 (TCP 56001-56003)</td><td class="mono">216[.]107[.]139[.]88:56001</td><td>Latitude.sh (same <code>216[.]107[.]136[.]0/22</code> as <code>.137.77</code>), active Sep 3 to Sep 24</td></tr>
+      <tr><td class="mono">RAT C2 (TCP 56001-56003)</td><td class="mono">185[.]94[.]29[.]79:56001</td><td>Active Sep 15 to Sep 25, sharing plugins with <code>.139.88</code></td></tr>
       <tr><td class="mono">Stager &amp; Carding IP</td><td class="mono">192[.]142[.]48[.]98</td><td>cPanel server hosting <code>pxbble[.]com</code>, <code>pebblexvale[.]com</code>, and <code>dump-central[.]cc</code></td></tr>
       <tr><td class="mono">Cross-Sink Stager IP</td><td class="mono">135[.]233[.]95[.]144</td><td>Shared across both <code>lnterstudios[.]org</code> (<code>vlux-board</code>) and <code>pxbble[.]com</code> (<code>devora</code>)</td></tr>
       <tr><td class="mono">Hook API Domains</td><td class="mono">www[.]canvases[.]ink | www[.]canvases[.]work | vibes-effecting[.]vercel[.]app</td><td>Serve <code>/api/canvases/sync?canvasId=system-welcome-canvas</code> and <code>/api/canvases/hooks/pubkey</code></td></tr>
       <tr><td class="mono">Stager Domains</td><td class="mono">pebblexvale[.]com | pxbble[.]com | lnterstudios[.]org | boardflow[.]uk | giantapplebees[.]shop | pixelrbx[.]com | elrbx[.]com | trelloweb[.]com | pixelstudiodev[.]com | bunnistudios[.]lol | l83[.]me</td><td>Wave 1 to 3 batch and JScript stager hosts</td></tr>
-      <tr><td class="mono">Pinned TLS Cert</td><td class="mono">CN=Hlkfsmwtezz (8ae8963b7158976f16b7525cbed1ca910dc39800e7660bb7a1e2611ce264f59e)</td><td>Pinned AsyncRAT server certificate; client JA3 <code>fc54e0d16d9764783542f0146a98b300</code></td></tr>
+      <tr><td class="mono">Pinned TLS Cert</td><td class="mono">CN=Hlkfsmwtezz (8ae8963b7158976f16b7525cbed1ca910dc39800e7660bb7a1e2611ce264f59e)</td><td>Pinned AsyncRAT server certificate, with client JA3 <code>fc54e0d16d9764783542f0146a98b300</code></td></tr>
       <tr><td class="mono">Host Artifacts</td><td class="mono">C:\ProgramData\IntelDriver\VQR.cmd | %USERPROFILE%\Downloads\UkuG.exe / WBkO.exe | %APPDATA%\DBJm.xml / JNsN.xml | %LOCALAPPDATA%\gRpp.vbs | HKCU\Software\&lt;32-hex HWID&gt;\&lt;32-hex plugin&gt;</td><td>Staging directory, hidden PowerShell copies, scheduled tasks, and registry plugin cache</td></tr>
     </tbody>
   </table>
@@ -1151,7 +1151,7 @@ process.env.PACKAGE_UPDATE_URL || "hxxp://boardflow[.]uk/package-update";</pre>
       </tr>
       <tr>
         <td class="mono">pebblexvale[.]com<br>(192[.]142[.]48[.]98)</td>
-        <td><code>pxbbzVkahQ5VT.bat</code> hosted behind a JavaScript bot challenge (standard Node.js <code>http.get</code> receives only challenge HTML; interactive browser receives the batch stager).</td>
+        <td><code>pxbbzVkahQ5VT.bat</code> hosted behind a JavaScript bot challenge (standard Node.js <code>http.get</code> receives only challenge HTML, whereas an interactive browser receives the batch stager).</td>
         <td>2026-10-24</td>
       </tr>
       <tr>
