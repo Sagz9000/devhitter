@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inside VoodooBox (Part 1): Hunting Supply-Chain Malware Across Developer Marketplaces</title>
+  <style>
+    /* Editorial, non-"cyber" typography & warm paper palette */
+    :root {
+      --bg-page: #faf9f5;
+      --bg-card: #ffffff;
+      --bg-subtle: #f3f1ea;
+      --bg-accent-blue: #eef4ff;
+      --bg-accent-amber: #fef7e6;
+      --bg-accent-green: #eefbf3;
+      --bg-accent-red: #fef1f1;
+
+      --text-main: #1e2022;
+      --text-secondary: #4a4f55;
+      --text-muted: #6e757c;
+
+      --border-light: #e3e0d6;
+      --border-strong: #c8c4b7;
+      --accent-blue: #2563eb;
+      --accent-blue-dark: #1d4ed8;
+      --accent-amber: #d97706;
+      --accent-green: #15803d;
+      --accent-red: #b91c1c;
+
+      --font-serif: "Georgia", "Times New Roman", serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 16.5px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      padding: 48px 24px 80px;
+    }
+
+    .article-container {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    /* Top utility bar (hidden when printing/saving to PDF) */
+    .utility-bar {
+      max-width: 820px;
+      margin: 0 auto 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .utility-bar a {
+      color: #1e2022;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .utility-bar a:hover {
+      text-decoration: underline;
+    }
+
+    .print-btn {
+      background: #1e2022;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: var(--font-sans);
+    }
+
+    .print-btn:hover {
+      background: #33373b;
+    }
+
+    /* Header & Metadata */
+    .series-kicker {
+      display: inline-block;
+      font-size: 12.5px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent-blue-dark);
+      background: var(--bg-accent-blue);
+      border: 1px solid #bfdbfe;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: 38px;
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+      color: #111315;
+      margin-bottom: 14px;
+    }
+
+    .subtitle {
+      font-size: 19px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+
+    .byline {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13.5px;
+      color: var(--text-muted);
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 32px;
+    }
+
+    .byline span.tag {
+      background: var(--bg-subtle);
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* Section Headings */
+    h2 {
+      font-family: var(--font-serif);
+      font-size: 26px;
+      font-weight: 400;
+      color: #111315;
+      margin-top: 44px;
+      margin-bottom: 14px;
+      line-height: 1.3;
+    }
+
+    h3 {
+      font-family: var(--font-sans);
+      font-size: 17px;
+      font-weight: 600;
+      color: #111315;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: var(--text-main);
+    }
+
+    ul, ol {
+      margin-bottom: 18px;
+      padding-left: 22px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    li strong {
+      color: #111315;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.86em;
+      background: var(--bg-subtle);
+      padding: 2px 5px;
+      border-radius: 4px;
+      color: #2c3136;
+    }
+
+    /* Quick-Read Stat Strip */
+    .stat-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 24px 0 32px;
+      break-inside: avoid;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .stat-number {
+      font-family: var(--font-serif);
+      font-size: 26px;
+      color: #111315;
+      line-height: 1.15;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    /* Visual / Diagram Cards */
+    .figure-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 22px 24px 18px;
+      margin: 26px 0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      break-inside: avoid;
+    }
+
+    .figure-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #111315;
+      margin-bottom: 2px;
+    }
+
+    .figure-subtitle {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .figure-caption {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--bg-subtle);
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+
+    .figure-caption strong {
+      color: #111315;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Callout Boxes for Spot-Readers */
+    .callout {
+      background: var(--bg-subtle);
+      border-left: 3.5px solid var(--accent-blue);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 20px 0;
+      font-size: 15px;
+      break-inside: avoid;
+    }
+
+    .callout-title {
+      font-weight: 600;
+      color: #111315;
+      margin-bottom: 4px;
+      font-size: 14.5px;
+    }
+
+    .callout p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Two-column comparison cards for spot-reading */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+      break-inside: avoid;
+    }
+
+    .info-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .info-box h4 {
+      font-size: 14.5px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #111315;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-box p, .info-box ul {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 0;
+    }
+
+    /* Funnel Bar Visual */
+    .funnel-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 14px 0 8px;
+    }
+
+    .funnel-row {
+      display: grid;
+      grid-template-columns: 195px 1fr 130px;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .funnel-label-main {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #111315;
+    }
+
+    .funnel-label-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .funnel-bar-track {
+      background: #f3f2ee;
+      height: 24px;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .funnel-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+    }
+
+    .funnel-metric {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .funnel-metric strong {
+      color: #111315;
+      font-weight: 600;
+    }
+
+    /* Clean Tables */
+    table.clean-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      margin: 12px 0 4px;
+    }
+
+    table.clean-table th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--bg-subtle);
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    table.clean-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-main);
+      vertical-align: top;
+    }
+
+    table.clean-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-clean { background: var(--bg-accent-green); color: var(--accent-green); }
+    .badge-warn { background: var(--bg-accent-amber); color: var(--accent-amber); }
+    .badge-danger { background: var(--bg-accent-red); color: var(--accent-red); }
+    .badge-blue { background: var(--bg-accent-blue); color: var(--accent-blue-dark); }
+
+    /* Footer / Next in Series */
+    .series-footer {
+      margin-top: 48px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 20px 24px;
+      break-inside: avoid;
+    }
+
+    /* Print / Save-as-PDF Optimization */
+    @page {
+      size: letter;
+      margin: 14mm 15mm 14mm 15mm;
+    }
+
+    @media print {
+      .utility-bar {
+        display: none !important;
+      }
+
+      body {
+        background-color: #ffffff;
+        padding: 0;
+        font-size: 10.5pt;
+        line-height: 1.5;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .article-container {
+        max-width: 100%;
+      }
+
+      h1 {
+        font-size: 24pt;
+      }
+
+      h2 {
+        font-size: 16pt;
+        margin-top: 22pt;
+        page-break-after: avoid;
+      }
+
+      h3 {
+        page-break-after: avoid;
+      }
+
+      .figure-card,
+      .stat-strip,
+      .comparison-grid,
+      .callout,
+      .series-footer {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .figure-card {
+        border: 1px solid #d4d0c5;
+        box-shadow: none;
+        margin: 14pt 0;
+        padding: 14pt 16pt;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="utility-bar">
+    <a href="../">&larr; Back to Devhitter Case Study</a>
+    <button class="print-btn" onclick="window.print()">Save / Print as PDF</button>
+  </div>
+
+  <article class="article-container">
+    <!-- HEADER -->
+    <header>
+      <div class="series-kicker">VoodooBox Engineering Series · Part 1</div>
+      <h1>Hunting Supply-Chain Malware Across Developer Marketplaces</h1>
+    </header>
+
+
+
+    <!-- SECTION 1: THE PROBLEM -->
+    <h2>Why Developer Tooling Needs a Different Playbook</h2>
+    <p>
+      If you drop a suspicious Windows executable (<code>.exe</code>) into a traditional malware sandbox, the signs of trouble are usually clear: it has no valid digital signature, it unpacks hidden code in memory, or it injects into a system process.
+    </p>
+    <p>
+      Developer extensions for editors like VS Code, Cursor, and Windsurf break all of those assumptions. An extension is essentially a bundle of JavaScript running inside your editor's Node.js process with your full user permissions.
+    </p>
+
+    <div class="comparison-grid">
+      <div class="info-box">
+        <h4>Why extensions blend in</h4>
+        <ul>
+          <li><strong>No code signing:</strong> Marketplace extensions don't carry traditional Authenticode signatures.</li>
+          <li><strong>Noisy by design:</strong> Legitimate extensions constantly read workspace files, spawn <code>git</code> or shell commands, and talk to remote APIs.</li>
+        </ul>
+      </div>
+      <div class="info-box">
+        <h4>How attackers exploit the ecosystem</h4>
+        <ul>
+          <li><strong>The "Sleeper" flip:</strong> Publish a harmless 1.4 KB stub today, wait weeks, and push a backdoor as a routine version update.</li>
+          <li><strong>Registry blind spots:</strong> Upload a clean build to one marketplace and slip a backdoored build with the <em>same version number</em> onto another.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p>
+      To catch supply-chain attacks in VoodooBox, I couldn't just wait for analysts to upload files, and I couldn't just scrape the "Newest" page of a single marketplace once. I had to build an architecture that watches <strong>identities across registries and over time</strong>.
+    </p>
+
+    <!-- SECTION 2: ARCHITECTURE -->
+    <h2>1. The Supply-Chain Architecture: Wide Intake, Narrow Detonation</h2>
+    <p>
+      Running an extension inside a real Windows VM with a simulated developer session takes several minutes, and VoodooBox runs two dedicated sandbox VMs. Static code analysis, on the other hand, takes seconds of CPU time.
+    </p>
+    <p>
+      Everything in the supply-chain pipeline is built around one rule: <strong>watch everything cheaply, and spend VM time only on builds that earn it.</strong>
+    </p>
+
+    <div class="figure-card">
+      <div class="figure-title">Every registry feeds one tracker; only questionable builds reach the sandbox</div>
+      <div class="figure-subtitle">End-to-end supply chain architecture across 4 developer ecosystems</div>
+
+      <svg viewBox="0 0 760 365" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#8c887d" />
+          </marker>
+          <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2563eb" />
+          </marker>
+        </defs>
+
+        <!-- ROW 1: SOURCES -->
+        <g transform="translate(0, 6)">
+          <rect x="10" y="0" width="172" height="58" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
+          <text x="96" y="23" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e2022">VS Code Marketplace</text>
+          <text x="96" y="40" text-anchor="middle" font-size="11" fill="#6e757c">Newest gallery · Install counts</text>
+
+          <rect x="199" y="0" width="172" height="58" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
+          <text x="285" y="23" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e2022">Open VSX Registry</text>
+          <text x="285" y="40" text-anchor="middle" font-size="11" fill="#6e757c">Published SHA-256 · Uploader</text>
+
+          <rect x="388" y="0" width="172" height="58" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
+          <text x="474" y="23" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e2022">Cursor Extension Gallery</text>
+          <text x="474" y="40" text-anchor="middle" font-size="11" fill="#6e757c">Open VSX mirror + own builds</text>
+
+          <rect x="577" y="0" width="172" height="58" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
+          <text x="663" y="23" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e2022">Cursor Agent Plugins</text>
+          <text x="663" y="40" text-anchor="middle" font-size="11" fill="#6e757c">Git repos: hooks, skills, MCP</text>
+        </g>
+
+        <!-- Arrows Row 1 -> Row 2 -->
+        <line x1="96" y1="64" x2="96" y2="88" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="285" y1="64" x2="285" y2="88" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="474" y1="64" x2="474" y2="88" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="663" y1="64" x2="663" y2="88" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <!-- ROW 2: COLLECTORS -->
+        <g transform="translate(0, 92)">
+          <rect x="10" y="0" width="172" height="56" rx="6" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.2"/>
+          <text x="96" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">VS Code Discovery</text>
+          <text x="96" y="39" text-anchor="middle" font-size="11" fill="#6e757c">Every 30 min · 5 newest pages</text>
+
+          <rect x="199" y="0" width="172" height="56" rx="6" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.2"/>
+          <text x="285" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">Open VSX Discovery</text>
+          <text x="285" y="39" text-anchor="middle" font-size="11" fill="#6e757c">Every 30 min · Hash-verified</text>
+
+          <rect x="388" y="0" width="172" height="56" rx="6" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.2"/>
+          <text x="474" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">Cursor Tamper Watch</text>
+          <text x="474" y="39" text-anchor="middle" font-size="11" fill="#6e757c">Every 15 min · Top 500 by ID</text>
+
+          <rect x="577" y="0" width="172" height="56" rx="6" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.2"/>
+          <text x="663" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">Plugin Catalogue</text>
+          <text x="663" y="39" text-anchor="middle" font-size="11" fill="#6e757c">Daily · Pinned commit vs HEAD</text>
+        </g>
+
+        <!-- Arrows Row 2 -> Row 3 -->
+        <line x1="96" y1="148" x2="96" y2="172" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="285" y1="148" x2="285" y2="172" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="474" y1="148" x2="474" y2="172" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="663" y1="148" x2="663" y2="172" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <!-- ROW 3: UNIFIED TRACKER HUB -->
+        <g transform="translate(0, 176)">
+          <rect x="10" y="0" width="739" height="56" rx="8" fill="#eef4ff" stroke="#2563eb" stroke-width="1.6"/>
+          <text x="380" y="22" text-anchor="middle" font-size="13.5" font-weight="600" fill="#1e2022">
+            Unified Identity Tracker · Keyed by (Marketplace, Extension ID, Version, Platform)
+          </text>
+          <text x="380" y="40" text-anchor="middle" font-size="11.5" fill="#4a4f55">
+            50,800 extension versions · 598 Cursor builds hash-checked · 493 agent plugins · Separate files per registry
+          </text>
+        </g>
+
+        <!-- Arrows Row 3 <-> Row 4 -->
+        <line x1="96" y1="232" x2="96" y2="256" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="112" y1="256" x2="112" y2="235" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="285" y1="232" x2="285" y2="256" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <!-- ROW 4: PIPELINE STAGES -->
+        <g transform="translate(0, 260)">
+          <rect x="10" y="0" width="172" height="58" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
+          <text x="96" y="22" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e2022">Sleeper Watch</text>
+          <text x="96" y="38" text-anchor="middle" font-size="11" fill="#6e757c">Hourly poll of &lt;4 KB stubs</text>
+          <text x="96" y="51" text-anchor="middle" font-size="10.5" fill="#6e757c">Version flip triggers triage</text>
+
+          <rect x="199" y="0" width="172" height="58" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
+          <text x="285" y="22" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e2022">7-Phase Static Triage</text>
+          <text x="285" y="38" text-anchor="middle" font-size="11" fill="#6e757c">Rules, entropy, supply chain</text>
+          <text x="285" y="51" text-anchor="middle" font-size="10.5" fill="#6e757c">+ Local AI "Vibe Check"</text>
+
+          <rect x="388" y="0" width="172" height="58" rx="6" fill="#eef4ff" stroke="#2563eb" stroke-width="1.5"/>
+          <text x="474" y="22" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1d4ed8">The Chamber (Sandbox)</text>
+          <text x="474" y="38" text-anchor="middle" font-size="11" fill="#4a4f55">Windows VM + Honeytrap</text>
+          <text x="474" y="51" text-anchor="middle" font-size="10.5" fill="#4a4f55">Escalated builds only (~1.3%)</text>
+
+          <rect x="577" y="0" width="172" height="58" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
+          <text x="663" y="22" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e2022">Outputs &amp; Campaigns</text>
+          <text x="663" y="38" text-anchor="middle" font-size="11" fill="#6e757c">Public ExtensionDetox feed</text>
+          <text x="663" y="51" text-anchor="middle" font-size="10.5" fill="#6e757c">Campaign clustering &amp; rules</text>
+        </g>
+
+        <!-- Horizontal flow arrows in Row 4 -->
+        <line x1="182" y1="289" x2="196" y2="289" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="371" y1="289" x2="385" y2="289" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+        <line x1="560" y1="289" x2="574" y2="289" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <!-- ROW 5: TAKEDOWN GRADING (DASHED) -->
+        <g transform="translate(0, 332)">
+          <rect x="10" y="0" width="739" height="28" rx="5" fill="#f5f4ef" stroke="#c8c4b7" stroke-dasharray="4 3" stroke-width="1.2"/>
+          <text x="380" y="18" text-anchor="middle" font-size="11.5" fill="#5a6065">
+            External Takedown Lists (Microsoft 2,450 IDs · Open VSX 1,036 IDs) (used strictly afterwards to grade accuracy; never shown to AI models)
+          </text>
+        </g>
+      </svg>
+
+      <div class="figure-caption">
+        <strong>How to read this:</strong> Each marketplace has its own collector tuned to how that registry actually behaves. All of them write into a single database table where the same extension on two registries is stored as two separate rows. Only questionable builds move right into the sandbox.
+      </div>
+    </div>
+
+    <!-- SECTION 3: MULTI-REGISTRY & TAMPER WORKFLOW -->
+    <h2>2. Multi-Registry Tracking: "A Version Number is a Claim; a Hash is a Fact"</h2>
+    <p>
+      Why track four different sources instead of just Microsoft's official VS Code Marketplace? Because modern developers use AI-first forks like <strong>Cursor</strong> and <strong>Windsurf</strong>, which pull from <strong>Open VSX</strong> or their own mirrors.
+    </p>
+    <p>
+      The blind spot became clear when Microsoft published an advisory on a malicious extension masquerading as Claude Code on Cursor's marketplace (<a href="https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/" target="_blank" rel="noopener">Microsoft Security Blog: Inside malicious Claude Code-branded Cursor extension persistent SSH backdoor</a>). Attackers published malicious builds (<code>2.1.312</code> and <code>2.1.313</code>) that opened a reverse SSH tunnel and harvested credentials.
+    </p>
+    <p>
+      That incident is exactly why I built Cursor marketplace support into VoodooBox. At the time, my tracker only monitored the VS Code Marketplace, so it could not see Cursor-specific attacks. Even worse, version <code>2.1.312</code> on Open VSX was completely clean. The attacker slipped a backdoored build onto Cursor sharing the exact same version number as the legitimate release.
+    </p>
+
+    <!-- DIAGRAM 2: CURSOR TAMPER CHECK & SLEEPER WATCH -->
+    <div class="figure-card">
+      <div class="figure-title">Two specialized workflows: Cross-Registry Tamper Checks &amp; Sleeper Watch</div>
+      <div class="figure-subtitle">How VoodooBox catches byte-level registry tampering (left) and time-delayed placeholder flips (right)</div>
+
+      <svg viewBox="0 0 760 285" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+        <!-- Divider -->
+        <line x1="380" y1="10" x2="380" y2="275" stroke="#e3e0d6" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+        <!-- LEFT SIDE: CURSOR TAMPER CHECK -->
+        <text x="185" y="22" text-anchor="middle" font-size="13" font-weight="600" fill="#1e2022">Workflow A: Cross-Registry Tamper Check (Every 15m)</text>
+
+        <rect x="45" y="38" width="280" height="42" rx="6" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.2"/>
+        <text x="185" y="57" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">1. Poll Top 500 Extensions on Cursor</text>
+        <text x="185" y="72" text-anchor="middle" font-size="10.5" fill="#6e757c">Cursor ignores date sorting, so the tracker queries by ID</text>
+
+        <line x1="185" y1="80" x2="185" y2="100" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <rect x="45" y="104" width="280" height="42" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
+        <text x="185" y="123" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">2. Stream &amp; Hash Against Upstream Source</text>
+        <text x="185" y="138" text-anchor="middle" font-size="10.5" fill="#6e757c">Compare SHA-256 with Open VSX or VS Code build</text>
+
+        <line x1="115" y1="146" x2="95" y2="174" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="255" y1="146" x2="275" y2="174" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <!-- Left outcome: Identical -->
+        <rect x="18" y="178" width="145" height="66" rx="6" fill="#eefbf3" stroke="#15803d" stroke-width="1.3"/>
+        <text x="90" y="198" text-anchor="middle" font-size="11.5" font-weight="600" fill="#15803d">Bytes Identical</text>
+        <text x="90" y="215" text-anchor="middle" font-size="10.5" fill="#4a4f55">Record hash &amp; discard</text>
+        <text x="90" y="231" text-anchor="middle" font-size="10" fill="#6e757c">(446 builds matched)</text>
+
+        <!-- Right outcome: Alert -->
+        <rect x="175" y="178" width="190" height="92" rx="6" fill="#fef1f1" stroke="#b91c1c" stroke-width="1.3"/>
+        <text x="270" y="197" text-anchor="middle" font-size="11.5" font-weight="600" fill="#b91c1c">Mismatch or Ghost Build</text>
+        <text x="187" y="215" font-size="10.5" fill="#1e2022">• <tspan font-weight="600">divergent:</tspan> Same v#, diff bytes</text>
+        <text x="187" y="230" font-size="10.5" fill="#1e2022">• <tspan font-weight="600">cursor_only:</tspan> Missing upstream</text>
+        <text x="187" y="245" font-size="10.5" fill="#1e2022">• <tspan font-weight="600">rollback:</tspan> Version disappeared</text>
+        <text x="270" y="262" text-anchor="middle" font-size="10" font-weight="600" fill="#b91c1c">→ Archive .cursor.vsix &amp; Triage</text>
+
+        <!-- RIGHT SIDE: SLEEPER WATCH -->
+        <text x="575" y="22" text-anchor="middle" font-size="13" font-weight="600" fill="#1e2022">Workflow B: "Sleeper" Placeholder Watch (Hourly)</text>
+
+        <rect x="425" y="38" width="300" height="42" rx="6" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.2"/>
+        <text x="575" y="57" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">1. Flag Tiny Extensions (&lt; 4 KB)</text>
+        <text x="575" y="72" text-anchor="middle" font-size="10.5" fill="#6e757c">Harmless v0.0.1 stubs pass initial triage (398 watched)</text>
+
+        <line x1="575" y1="80" x2="575" y2="100" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <rect x="425" y="104" width="300" height="42" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
+        <text x="575" y="123" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">2. Re-Poll Every Watched ID Hourly</text>
+        <text x="575" y="138" text-anchor="middle" font-size="10.5" fill="#6e757c">Catches silent updates that skip "Newest" pages</text>
+
+        <line x1="575" y1="146" x2="575" y2="174" stroke="#2563eb" stroke-width="1.4" marker-end="url(#arrow-blue)"/>
+
+        <rect x="425" y="178" width="300" height="92" rx="6" fill="#eef4ff" stroke="#2563eb" stroke-width="1.4"/>
+        <text x="575" y="197" text-anchor="middle" font-size="12" font-weight="600" fill="#1d4ed8">3. Version Flip Detected (1.4 KB → 33 KB)</text>
+        <text x="439" y="216" font-size="10.5" fill="#1e2022">• Immediate 7-phase static triage + AI Vibe Check</text>
+        <text x="439" y="232" font-size="10.5" fill="#1e2022">• Questionable flips escalate straight to The Chamber</text>
+        <text x="575" y="256" text-anchor="middle" font-size="10.5" font-weight="600" fill="#1d4ed8">Caught 9 Boardflow RAT sleepers in a 33–66 KB band</text>
+      </svg>
+
+      <div class="figure-caption">
+        <strong>Why I built it this way:</strong> Only alerted Cursor builds are saved to disk; identical builds are hashed in stream and discarded, costing bandwidth rather than storage. Meanwhile, the hourly Sleeper Watch ensures a quiet placeholder can never wake up unnoticed.
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">What about AI Agent Plugins (MCP Servers, Rules &amp; Hooks)?</div>
+      <p>
+        Cursor plugins aren't packaged as <code>.vsix</code> files. They are live GitHub repositories containing AI prompt rules, shell hooks, and Model Context Protocol (MCP) servers. VoodooBox catalogues all 493 plugins daily, compares the commit Cursor reviewed (<code>gitRef</code>) against the repo's live <code>HEAD</code> to spot unreviewed changes, and checks for hidden Unicode characters (invisible prompt injection) or auto-run shell hooks before running suspicious plugins in a dedicated bait harness.
+      </p>
+    </div>
+
+    <!-- SECTION 4: INSIDE STATIC TRIAGE, UNPACKING & THE CHAMBER -->
+    <h2>3. Inside the Gate: Static Triage, Unpacking Loops &amp; The Chamber</h2>
+    <p>
+      When a new or updated extension lands in the tracker, how does VoodooBox decide whether it deserves one of the two Windows VMs? It runs a fast <strong>7-phase static pipeline</strong>, calls on an <strong>isolated unpacking loop</strong> if code is heavily obfuscated, and only then escalates to a baited sandbox environment called <strong>The Chamber</strong>.
+    </p>
+
+    <!-- DIAGRAM 3: STATIC TRIAGE, UNPACKING & THE CHAMBER -->
+    <div class="figure-card">
+      <div class="figure-title">How an extension is judged: Static checks, unpacking, and the sandbox gate</div>
+      <div class="figure-subtitle">Fast triage and unpacking loops peel back obfuscation before spending VM time</div>
+
+      <svg viewBox="0 0 760 250" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+        <!-- Box 1: Static Triage -->
+        <rect x="10" y="10" width="225" height="230" rx="8" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.3"/>
+        <text x="24" y="32" font-size="12.5" font-weight="600" fill="#1e2022">1. Fast Static Triage</text>
+        <text x="24" y="48" font-size="10.5" fill="#6e757c">Seconds of CPU across 7 checks:</text>
+
+        <g font-size="10.5" fill="#1e2022">
+          <text x="24" y="70">• <tspan font-weight="600">Metadata:</tspan> Startup events, typos</text>
+          <text x="24" y="88">• <tspan font-weight="600">Supply chain:</tspan> Undeclared pkgs</text>
+          <text x="24" y="106">• <tspan font-weight="600">Forensics:</tspan> Fake magic bytes</text>
+          <text x="24" y="124">• <tspan font-weight="600">Threat intel:</tspan> IPs, webhooks</text>
+          <text x="24" y="142">• <tspan font-weight="600">YARA rules:</tspan> Campaign patterns</text>
+          <text x="24" y="160">• <tspan font-weight="600" fill="#1d4ed8">AI Vibe Check:</tspan> Store vs code</text>
+          <text x="24" y="178">• <tspan font-weight="600">Evidence verifier:</tspan> Grounds facts</text>
+        </g>
+        <text x="24" y="210" font-size="10" font-weight="600" fill="#6e757c">Obfuscated scripts or payloads?</text>
+        <text x="24" y="225" font-size="10" fill="#2563eb">→ Hands off to Unpacking Loop</text>
+
+        <!-- Arrow Box 1 -> Box 2 -->
+        <line x1="235" y1="115" x2="265" y2="115" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+        <!-- Box 2: Layered Unpacker & Unpack Agent -->
+        <rect x="268" y="10" width="245" height="230" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.4"/>
+        <text x="282" y="32" font-size="12.5" font-weight="600" fill="#1d4ed8">2. Multi-Layer Unpacking</text>
+        <text x="282" y="48" font-size="10.5" fill="#6e757c">Isolated REMnux environment (no network)</text>
+
+        <g font-size="10.5" fill="#1e2022">
+          <rect x="280" y="60" width="220" height="48" rx="5" fill="#f8f7f2" stroke="#e3e0d6"/>
+          <text x="288" y="76" font-weight="600" fill="#1e2022">Static Layer Unpacker:</text>
+          <text x="288" y="92" font-size="10" fill="#4a4f55">Peels Base64, obfuscator.io, VBE,</text>
+          <text x="288" y="103" font-size="10" fill="#4a4f55">PowerShell folding, UPX, archives</text>
+
+          <line x1="390" y1="108" x2="390" y2="124" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+          <rect x="280" y="126" width="220" height="66" rx="5" fill="#eef4ff" stroke="#bfdbfe"/>
+          <text x="288" y="142" font-weight="600" fill="#1d4ed8">AI Unpack Agent (if still opaque):</text>
+          <text x="288" y="157" font-size="10" fill="#1e2022">Local model in closed loop (max 36 turns)</text>
+          <text x="288" y="171" font-size="10" fill="#4a4f55">Runs safe Node stubs &amp; AST decoders</text>
+          <text x="288" y="184" font-size="10" fill="#4a4f55">Outputs recovered payload as child task</text>
+        </g>
+        <text x="282" y="212" font-size="10" font-weight="600" fill="#15803d">Self-learning: Engineer writes new</text>
+        <text x="282" y="226" font-size="10" fill="#15803d">unpacker plugins for recurring formats</text>
+
+        <!-- Gate Arrow Box 2 -> Box 3 -->
+        <line x1="513" y1="115" x2="540" y2="115" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+        <text x="527" y="105" text-anchor="middle" font-size="9" font-weight="600" fill="#1d4ed8">Gate</text>
+        <text x="527" y="132" text-anchor="middle" font-size="8.5" fill="#6e757c">≥ 0.45 / crit</text>
+
+        <!-- Box 3: The Chamber -->
+        <rect x="542" y="10" width="208" height="230" rx="8" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.3"/>
+        <text x="554" y="32" font-size="12.5" font-weight="600" fill="#1e2022">3. The Chamber</text>
+        <text x="554" y="48" font-size="10.5" fill="#6e757c">Full Windows VM Detonation</text>
+
+        <g font-size="10" fill="#1e2022">
+          <text x="554" y="70">• Reverts to clean VM snapshot</text>
+          <text x="554" y="87">• Rotates SMBIOS, MAC, user</text>
+          <text x="554" y="104">• Honeytrap workspace &amp; files</text>
+          <text x="554" y="121">• Decoy .env, AWS &amp; SSH keys</text>
+          <text x="554" y="138">• Clipboard bait (Bitcoin addr)</text>
+          <text x="554" y="155">• Simulates developer palette</text>
+          <text x="554" y="172">• Scoped to extension host</text>
+          <text x="554" y="189">• Sysmon + Rust agent stream</text>
+        </g>
+        <text x="554" y="215" font-size="10" font-weight="600" fill="#b91c1c">Captured second stages</text>
+        <text x="554" y="228" font-size="10" fill="#b91c1c">loop back as child tasks</text>
+      </svg>
+
+      <div class="figure-caption">
+        <strong>How the pipeline protects sandbox time:</strong> Static rules flag suspicious patterns. If a script is packed or obfuscated, the isolated unpacking loop decodes it layer by layer without executing it. Only when dangerous intent or high-risk indicators are confirmed does the extension enter The Chamber for full dynamic detonation.
+      </div>
+    </div>
+
+    <h3>How the Multi-Layer Unpacking Loop Works</h3>
+    <p>
+      Malicious extensions frequently hide their true behavior under multiple layers of obfuscation, such as scrambled text, encoded scripts, or encrypted loaders. Rather than blindly launching every obfuscated script into an expensive Windows VM, VoodooBox peels it open statically first:
+    </p>
+    <ul>
+      <li>
+        <strong>The Static Layer Unpacker:</strong> Runs inside an isolated REMnux container with no network access. It systematically walks through common script packing techniques (JavaScript packers, <code>atob</code> decoding, obfuscator.io string tables, PowerShell arithmetic folding, and batch de-chaining). Each decoded layer is saved and checked with signatures again.
+      </li>
+      <li>
+        <strong>The AI Unpack Agent:</strong> When a layer is too complex or uses custom cryptography that static rules cannot parse, the local AI Unpack Agent steps in. It operates in a strict, bounded tool loop (up to 36 turns). The agent can inspect the layer, run safe JavaScript emulators with recording stubs for Windows Script Host and ActiveX, or run constrained Python decoders. Once it isolates the inner executable or script, the recovered artifact loops back into the pipeline as a new child task.
+      </li>
+      <li>
+        <strong>Automated Learning:</strong> When the lab encounters recurring obfuscation tricks, an automated engineer cycle drafts a targeted decode plugin for that family. Once benchmarked against the corpus, the plugin joins the static unpacker so future samples peel open in milliseconds without needing agent turns.
+      </li>
+    </ul>
+
+    <!-- SECTION 5: WORKFLOW SUMMARY & SLEEPER WATCH -->
+    <h2>4. Putting It Together: How the Automated Pipeline Traps Supply-Chain Malware</h2>
+    <p>
+      If you look at the system as a whole, it operates like an automated factory line. The goal is simple: handle thousands of routine updates cleanly, but ensure that any subtle trick, like an empty placeholder waking up or an extension dropping hidden files, immediately triggers deep inspection.
+    </p>
+
+    <!-- WORKFLOW SWIMLANE SUMMARY DIAGRAM -->
+    <div class="figure-card">
+      <div class="figure-title">The Complete Pipeline: From Marketplace Intake to Confirmed Verdict</div>
+      <div class="figure-subtitle">How routine checks hand off to specialized tools only when an extension looks suspicious</div>
+
+      <svg viewBox="0 0 760 310" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+        <!-- Stage 1 -->
+        <g transform="translate(10, 10)">
+          <rect x="0" y="0" width="165" height="180" rx="8" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.3"/>
+          <text x="82" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">Step 1: Intake &amp; Triage</text>
+          <text x="82" y="44" text-anchor="middle" font-size="10.5" fill="#6e757c">Runs every 15 to 30 min</text>
+          <line x1="15" y1="54" x2="150" y2="54" stroke="#e3e0d6"/>
+          <text x="14" y="74" font-size="10.5" fill="#1e2022">• Scrapes new versions</text>
+          <text x="14" y="94" font-size="10.5" fill="#1e2022">• Hashes mirror builds</text>
+          <text x="14" y="114" font-size="10.5" fill="#1e2022">• 7 static score checks</text>
+          <text x="14" y="134" font-size="10.5" fill="#1e2022">• AI Vibe Check on text</text>
+          <rect x="12" y="148" width="141" height="22" rx="4" fill="#eefbf3" stroke="#15803d"/>
+          <text x="82" y="163" text-anchor="middle" font-size="9.5" font-weight="600" fill="#15803d">97% judged clean here</text>
+        </g>
+
+        <!-- Arrow 1 -> 2 -->
+        <line x1="175" y1="95" x2="195" y2="95" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+        <!-- Stage 2 -->
+        <g transform="translate(195, 10)">
+          <rect x="0" y="0" width="165" height="180" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.4"/>
+          <text x="82" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#1d4ed8">Step 2: Unpacking</text>
+          <text x="82" y="44" text-anchor="middle" font-size="10.5" fill="#6e757c">REMnux container (offline)</text>
+          <line x1="15" y1="54" x2="150" y2="54" stroke="#bfdbfe"/>
+          <text x="14" y="74" font-size="10.5" fill="#1e2022">• Peels nested Base64</text>
+          <text x="14" y="94" font-size="10.5" fill="#1e2022">• Unfolds obfuscators</text>
+          <text x="14" y="114" font-size="10.5" fill="#1e2022">• AI Agent runs stubs</text>
+          <text x="14" y="134" font-size="10.5" fill="#1e2022">• Proves intent to sink</text>
+          <rect x="12" y="148" width="141" height="22" rx="4" fill="#eef4ff" stroke="#bfdbfe"/>
+          <text x="82" y="163" text-anchor="middle" font-size="9.5" font-weight="600" fill="#1d4ed8">Reveals hidden code</text>
+        </g>
+
+        <!-- Arrow 2 -> 3 -->
+        <line x1="360" y1="95" x2="380" y2="95" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+        <!-- Stage 3 -->
+        <g transform="translate(380, 10)">
+          <rect x="0" y="0" width="175" height="180" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.4"/>
+          <text x="87" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#1d4ed8">Step 3: The Chamber</text>
+          <text x="87" y="44" text-anchor="middle" font-size="10.5" fill="#6e757c">Windows 10 Sandbox VM</text>
+          <line x1="15" y1="54" x2="160" y2="54" stroke="#bfdbfe"/>
+          <text x="14" y="74" font-size="10.5" fill="#1e2022">• Reverts to clean VM</text>
+          <text x="14" y="94" font-size="10.5" fill="#1e2022">• Changes machine identity</text>
+          <text x="14" y="114" font-size="10.5" fill="#1e2022">• Baits with fake secrets</text>
+          <text x="14" y="134" font-size="10.5" fill="#1e2022">• Provokes code execution</text>
+          <rect x="12" y="148" width="151" height="22" rx="4" fill="#fef1f1" stroke="#b91c1c"/>
+          <text x="87" y="163" text-anchor="middle" font-size="9.5" font-weight="600" fill="#b91c1c">Only 1.3% earns a run</text>
+        </g>
+
+        <!-- Arrow 3 -> 4 -->
+        <line x1="555" y1="95" x2="575" y2="95" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+        <!-- Stage 4 -->
+        <g transform="translate(575, 10)">
+          <rect x="0" y="0" width="175" height="180" rx="8" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.3"/>
+          <text x="87" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">Step 4: Evidence &amp; Loop</text>
+          <text x="87" y="44" text-anchor="middle" font-size="10.5" fill="#6e757c">Recorded Proof</text>
+          <line x1="15" y1="54" x2="160" y2="54" stroke="#e3e0d6"/>
+          <text x="14" y="74" font-size="10.5" fill="#1e2022">• Scoped process tree</text>
+          <text x="14" y="94" font-size="10.5" fill="#1e2022">• Dumps injected memory</text>
+          <text x="14" y="114" font-size="10.5" fill="#1e2022">• C2 config extraction</text>
+          <text x="14" y="134" font-size="10.5" fill="#1e2022">• Final weighted verdict</text>
+          <rect x="12" y="148" width="151" height="22" rx="4" fill="#eef4ff" stroke="#2563eb"/>
+          <text x="87" y="163" text-anchor="middle" font-size="9.5" font-weight="600" fill="#1d4ed8">Published to Detox feed</text>
+        </g>
+
+        <!-- Re-entry loop for child tasks -->
+        <path d="M 662 190 L 662 215 L 277 215 L 277 195" fill="none" stroke="#b91c1c" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+        <text x="470" y="228" text-anchor="middle" font-size="10" font-weight="600" fill="#b91c1c">
+          Dropped files &amp; second-stage payloads re-enter as Child Tasks for static analysis
+        </text>
+
+        <!-- Sleeper Watch Banner underneath -->
+        <g transform="translate(10, 245)">
+          <rect x="0" y="0" width="740" height="52" rx="6" fill="#fef7e6" stroke="#d97706" stroke-width="1.2"/>
+          <text x="14" y="21" font-size="11.5" font-weight="600" fill="#d97706">Continuous Background Watch: The Sleeper Sentry</text>
+          <text x="14" y="38" font-size="10.5" fill="#4a4f55">
+            Extensions under 4 KB don't drop off the radar. The lab polls them every hour. If an author pushes an update, the new version jumps right into Step 1.
+          </text>
+        </g>
+      </svg>
+
+      <div class="figure-caption">
+        <strong>The pipeline in four simple handoffs:</strong> Static triage rapidly clears harmless code. Obfuscated files are unpacked offline. High-risk candidates enter the baited Windows VM. Finally, anything the malware writes to disk or injects into memory loops back to be analyzed on its own.
+      </div>
+    </div>
+
+    <!-- SECTION 6: LESSONS LEARNED -->
+    <h2>Three Design Lessons I Learned the Hard Way</h2>
+    <ul>
+      <li>
+        <strong>Never feed external blocklists into AI prompts:</strong> Early on, I passed Microsoft's takedown flag into the sandbox AI prompt as context. When the model saw an extension was on a blocklist, it reasoned backwards and invented a sinister command-and-control story out of routine Microsoft Edge update traffic. Today, external takedown lists are stripped from every prompt and used <em>strictly after the fact</em> to grade accuracy.
+      </li>
+      <li>
+        <strong>If a phase fails, drop it, do not score it as zero:</strong> When a local AI server is busy or restarting, a missing score of <code>0.0</code> must never be averaged in as "0% risk" (which clears malware) or a flat fallback (which causes false alarms). If a phase doesn't run, the remaining weights renormalize automatically.
+      </li>
+      <li>
+        <strong>Sandbox capacity is the real bottleneck:</strong> Detection works well enough that there are currently 3,547 flagged builds waiting for a turn in the two Windows VMs. Keeping the static gate sharp, and prioritizing active sleeper flips and campaign hits, is what keeps the lab responsive.
+      </li>
+    </ul>
+
+  </article>
+
+</body>
+</html>
