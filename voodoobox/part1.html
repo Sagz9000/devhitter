@@ -428,7 +428,7 @@
     <!-- SECTION 3: MULTI-REGISTRY & TAMPER WORKFLOW -->
     <h2>2. Multi-Registry Tracking: "A Version Number is a Claim; a Hash is a Fact"</h2>
     <p>
-      Why track four different sources instead of just Microsoft's official VS Code Marketplace? Because modern developers use AI-first forks like <strong>Cursor</strong> and <strong>Windsurf</strong>, which pull from <strong>Open VSX</strong> or their own mirrors.
+      Tracking Microsoft's official VS Code Marketplace alone is no longer enough. Modern developers increasingly rely on AI-first forks like <strong>Cursor</strong> and <strong>Windsurf</strong>, which pull extensions from <strong>Open VSX</strong> or their own standalone mirrors.
     </p>
     <p>
       The blind spot became clear when Microsoft published an advisory on a malicious extension masquerading as Claude Code on Cursor's marketplace (<a href="https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/" target="_blank" rel="noopener">Microsoft Security Blog: Inside malicious Claude Code-branded Cursor extension persistent SSH backdoor</a>). Attackers published malicious builds that opened a reverse SSH tunnel and harvested credentials.
@@ -512,7 +512,7 @@
     <!-- SECTION 4: INSIDE STATIC TRIAGE, UNPACKING & THE CHAMBER -->
     <h2>3. Inside the Gate: Static Triage, Unpacking Loops &amp; The Chamber</h2>
     <p>
-      When a new or updated extension lands in the tracker, how does VoodooBox decide whether it deserves a VM run? It runs a fast <strong>7-phase static pipeline</strong>, calls on an <strong>isolated unpacking loop</strong> if code is heavily obfuscated, and only then escalates to a baited sandbox environment called <strong>The Chamber</strong>.
+      Before dedicating a VM run to a newly discovered extension, VoodooBox screens it through a fast <strong>7-phase static pipeline</strong>. If the code is heavily obfuscated, it routes into an <strong>isolated unpacking loop</strong> to peel back the layers before deciding whether to escalate into a baited sandbox environment called <strong>The Chamber</strong>.
     </p>
 
     <!-- DIAGRAM 3: STATIC TRIAGE, UNPACKING & THE CHAMBER -->
