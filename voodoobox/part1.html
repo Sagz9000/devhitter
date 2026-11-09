@@ -606,6 +606,9 @@
       <li>
         <strong>Automated Learning:</strong> When the lab encounters recurring obfuscation tricks, an automated engineer cycle drafts a targeted decode plugin for that family. Once benchmarked against the corpus, the plugin joins the static unpacker so future samples peel open in milliseconds without needing agent turns.
       </li>
+      <li>
+        <strong>Headless Ghidra Decompilation:</strong> For native binaries (PE files) dropped by an installer or unpacked from an archive, headless Ghidra runs in an isolated container to decompile code and identify risky native API functions before the binary ever touches a live VM.
+      </li>
     </ul>
 
     <!-- SECTION 5: WORKFLOW SUMMARY & SLEEPER WATCH -->
@@ -640,13 +643,13 @@
         <!-- Stage 2 -->
         <g transform="translate(195, 10)">
           <rect x="0" y="0" width="165" height="180" rx="8" fill="#1e232d" stroke="#38bdf8" stroke-width="1.4"/>
-          <text x="82" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#38bdf8">Step 2: Unpacking</text>
-          <text x="82" y="44" text-anchor="middle" font-size="10.5" fill="#9aa8b8">REMnux container (offline)</text>
+          <text x="82" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#38bdf8">Step 2: Unpacking &amp; Ghidra</text>
+          <text x="82" y="44" text-anchor="middle" font-size="10.5" fill="#9aa8b8">REMnux &amp; Ghidra (offline)</text>
           <line x1="15" y1="54" x2="150" y2="54" stroke="#2e3646"/>
           <text x="14" y="74" font-size="10.5" fill="#f0f4f8">• Peels nested Base64</text>
           <text x="14" y="94" font-size="10.5" fill="#f0f4f8">• Unfolds obfuscators</text>
-          <text x="14" y="114" font-size="10.5" fill="#f0f4f8">• AI Agent runs stubs</text>
-          <text x="14" y="134" font-size="10.5" fill="#f0f4f8">• Proves intent to sink</text>
+          <text x="14" y="114" font-size="10.5" fill="#f0f4f8">• Ghidra native PE decompile</text>
+          <text x="14" y="134" font-size="10.5" fill="#f0f4f8">• AI Agent unpacker stubs</text>
           <rect x="12" y="148" width="141" height="22" rx="4" fill="rgba(56, 189, 248, 0.12)" stroke="#38bdf8"/>
           <text x="82" y="163" text-anchor="middle" font-size="9.5" font-weight="600" fill="#38bdf8">Reveals hidden code</text>
         </g>
@@ -688,7 +691,7 @@
         <!-- Re-entry loop for child tasks -->
         <path d="M 662 190 L 662 215 L 277 215 L 277 195" fill="none" stroke="#f87171" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
         <text x="470" y="228" text-anchor="middle" font-size="10" font-weight="600" fill="#f87171">
-          Dropped files &amp; second-stage payloads re-enter as Child Tasks for static analysis
+          Dropped files, native PEs &amp; second stages re-enter for static analysis &amp; Ghidra decompilation
         </text>
 
         <!-- Sleeper Watch Banner underneath -->
