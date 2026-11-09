@@ -3,33 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inside VoodooBox (Part 1): Hunting Supply-Chain Malware Across Developer Marketplaces</title>
+  <title>Hunting Supply-Chain Malware Across Developer Marketplaces</title>
   <style>
-    /* Editorial, non-"cyber" typography & warm paper palette */
     :root {
-      --bg-page: #faf9f5;
-      --bg-card: #ffffff;
-      --bg-subtle: #f3f1ea;
-      --bg-accent-blue: #eef4ff;
-      --bg-accent-amber: #fef7e6;
-      --bg-accent-green: #eefbf3;
-      --bg-accent-red: #fef1f1;
-
-      --text-main: #1e2022;
-      --text-secondary: #4a4f55;
-      --text-muted: #6e757c;
-
-      --border-light: #e3e0d6;
-      --border-strong: #c8c4b7;
-      --accent-blue: #2563eb;
-      --accent-blue-dark: #1d4ed8;
-      --accent-amber: #d97706;
-      --accent-green: #15803d;
-      --accent-red: #b91c1c;
-
-      --font-serif: "Georgia", "Times New Roman", serif;
-      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      --bg: #161a22;
+      --surface: #1e232d;
+      --surface2: #262c38;
+      --ink: #f0f4f8;
+      --body: #d2dae3;
+      --dim: #9aa8b8;
+      --red: #f87171;
+      --red-bg: rgba(248, 113, 113, 0.12);
+      --amber: #fbbf24;
+      --amber-bg: rgba(251, 191, 36, 0.12);
+      --green: #34d399;
+      --green-bg: rgba(52, 211, 153, 0.12);
+      --cyan: #38bdf8;
+      --cyan-bg: rgba(56, 189, 248, 0.12);
+      --purple: #c084fc;
+      --line: #2e3646;
     }
 
     * {
@@ -38,227 +30,164 @@
       padding: 0;
     }
 
-    body {
-      background-color: var(--bg-page);
-      color: var(--text-main);
-      font-family: var(--font-sans);
-      font-size: 16.5px;
-      line-height: 1.65;
-      -webkit-font-smoothing: antialiased;
-      padding: 48px 24px 80px;
+    html {
+      background: var(--bg);
+      scroll-behavior: smooth;
     }
 
-    .article-container {
-      max-width: 820px;
+    body {
+      background: var(--bg);
+      color: var(--body);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 1.12rem;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      padding: 50px 24px 100px;
+    }
+
+    article {
+      max-width: 960px;
       margin: 0 auto;
     }
 
-    /* Top utility bar (hidden when printing/saving to PDF) */
-    .utility-bar {
-      max-width: 820px;
-      margin: 0 auto 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #ffffff;
-      border: 1px solid var(--border-light);
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 13px;
-      color: var(--text-secondary);
+    header {
+      margin-bottom: 36px;
     }
 
-    .utility-bar a {
-      color: #1e2022;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .utility-bar a:hover {
-      text-decoration: underline;
-    }
-
-    .print-btn {
-      background: #1e2022;
-      color: #ffffff;
-      border: none;
-      border-radius: 6px;
-      padding: 7px 14px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      font-family: var(--font-sans);
-    }
-
-    .print-btn:hover {
-      background: #33373b;
-    }
-
-    /* Header & Metadata */
-    .series-kicker {
+    .series-tag {
       display: inline-block;
-      font-size: 12.5px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
-      color: var(--accent-blue-dark);
-      background: var(--bg-accent-blue);
-      border: 1px solid #bfdbfe;
-      padding: 4px 10px;
-      border-radius: 4px;
-      margin-bottom: 16px;
+      color: var(--cyan);
+      margin-bottom: 14px;
     }
 
     h1 {
-      font-family: var(--font-serif);
-      font-size: 38px;
-      font-weight: 400;
-      line-height: 1.2;
-      letter-spacing: -0.015em;
-      color: #111315;
-      margin-bottom: 14px;
+      font-size: 2.5rem;
+      line-height: 1.25;
+      color: var(--ink);
+      letter-spacing: -0.025em;
+      font-weight: 800;
+      margin-bottom: 18px;
     }
 
-    .subtitle {
-      font-size: 19px;
-      line-height: 1.5;
-      color: var(--text-secondary);
-      margin-bottom: 20px;
-      font-weight: 400;
-    }
-
-    .byline {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 13.5px;
-      color: var(--text-muted);
-      padding-bottom: 24px;
-      border-bottom: 1px solid var(--border-light);
-      margin-bottom: 32px;
-    }
-
-    .byline span.tag {
-      background: var(--bg-subtle);
-      padding: 2px 8px;
-      border-radius: 4px;
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
-
-    /* Section Headings */
     h2 {
-      font-family: var(--font-serif);
-      font-size: 26px;
-      font-weight: 400;
-      color: #111315;
-      margin-top: 44px;
-      margin-bottom: 14px;
-      line-height: 1.3;
+      font-size: 1.7rem;
+      color: var(--ink);
+      margin: 48px 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+      letter-spacing: -0.015em;
+      font-weight: 750;
     }
 
     h3 {
-      font-family: var(--font-sans);
-      font-size: 17px;
-      font-weight: 600;
-      color: #111315;
-      margin-top: 24px;
-      margin-bottom: 8px;
+      font-size: 1.25rem;
+      color: var(--cyan);
+      margin: 28px 0 12px;
+      font-weight: 700;
     }
 
     p {
-      margin-bottom: 16px;
-      color: var(--text-main);
+      margin-bottom: 18px;
+    }
+
+    a {
+      color: var(--cyan);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
     }
 
     ul, ol {
-      margin-bottom: 18px;
-      padding-left: 22px;
+      margin: 0 0 24px;
+      padding-left: 26px;
     }
 
     li {
       margin-bottom: 8px;
-      color: var(--text-main);
     }
 
     li strong {
-      color: #111315;
+      color: var(--ink);
     }
 
     code {
-      font-family: var(--font-mono);
-      font-size: 0.86em;
-      background: var(--bg-subtle);
-      padding: 2px 5px;
+      font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+      font-size: 0.88em;
+      background: var(--surface2);
+      padding: 2px 6px;
       border-radius: 4px;
-      color: #2c3136;
+      color: #fca5a5;
+      border: 1px solid rgba(255, 255, 255, 0.07);
     }
 
-    /* Quick-Read Stat Strip */
-    .stat-strip {
+    /* Comparison Box Grid */
+    .comparison-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin: 24px 0 32px;
-      break-inside: avoid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 24px 0 28px;
     }
 
-    .stat-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-light);
+    .info-box {
+      background: var(--surface);
+      border: 1px solid var(--line);
       border-radius: 8px;
-      padding: 14px 16px;
+      padding: 18px 20px;
     }
 
-    .stat-number {
-      font-family: var(--font-serif);
-      font-size: 26px;
-      color: #111315;
-      line-height: 1.15;
-      margin-bottom: 4px;
+    .info-box h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--ink);
     }
 
-    .stat-label {
-      font-size: 12.5px;
-      color: var(--text-muted);
-      line-height: 1.35;
+    .info-box ul {
+      margin-bottom: 0;
+      padding-left: 20px;
+      font-size: 0.98rem;
     }
 
-    /* Visual / Diagram Cards */
+    /* Diagram / Visual Cards */
     .figure-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-light);
+      background: var(--surface);
+      border: 1px solid var(--line);
       border-radius: 10px;
       padding: 22px 24px 18px;
-      margin: 26px 0;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-      break-inside: avoid;
+      margin: 32px 0;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
     }
 
     .figure-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: #111315;
-      margin-bottom: 2px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
     }
 
     .figure-subtitle {
-      font-size: 12.5px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
+      font-size: 0.9rem;
+      color: var(--dim);
+      margin-bottom: 18px;
     }
 
     .figure-caption {
       margin-top: 14px;
       padding-top: 12px;
-      border-top: 1px solid var(--bg-subtle);
-      font-size: 13.5px;
-      line-height: 1.5;
-      color: var(--text-secondary);
+      border-top: 1px solid var(--line);
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: var(--dim);
     }
 
     .figure-caption strong {
-      color: #111315;
+      color: var(--ink);
     }
 
     svg {
@@ -267,234 +196,72 @@
       display: block;
     }
 
-    /* Callout Boxes for Spot-Readers */
+    /* Clean Callout */
     .callout {
-      background: var(--bg-subtle);
-      border-left: 3.5px solid var(--accent-blue);
+      background: var(--surface);
+      border-left: 4px solid var(--cyan);
       border-radius: 0 8px 8px 0;
-      padding: 14px 18px;
-      margin: 20px 0;
-      font-size: 15px;
-      break-inside: avoid;
+      padding: 16px 20px;
+      margin: 24px 0;
+      border-top: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
     }
 
     .callout-title {
-      font-weight: 600;
-      color: #111315;
-      margin-bottom: 4px;
-      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+      font-size: 1.05rem;
     }
 
     .callout p:last-child {
       margin-bottom: 0;
     }
 
-    /* Two-column comparison cards for spot-reading */
-    .comparison-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin: 20px 0;
-      break-inside: avoid;
-    }
-
-    .info-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border-light);
-      border-radius: 8px;
-      padding: 16px 18px;
-    }
-
-    .info-box h4 {
-      font-size: 14.5px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #111315;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .info-box p, .info-box ul {
-      font-size: 14px;
-      color: var(--text-secondary);
-      margin-bottom: 0;
-    }
-
-    /* Funnel Bar Visual */
-    .funnel-rows {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin: 14px 0 8px;
-    }
-
-    .funnel-row {
-      display: grid;
-      grid-template-columns: 195px 1fr 130px;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .funnel-label-main {
-      font-size: 13.5px;
-      font-weight: 600;
-      color: #111315;
-    }
-
-    .funnel-label-sub {
-      font-size: 11.5px;
-      color: var(--text-muted);
-    }
-
-    .funnel-bar-track {
-      background: #f3f2ee;
-      height: 24px;
-      border-radius: 4px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .funnel-bar-fill {
-      height: 100%;
-      border-radius: 4px;
-    }
-
-    .funnel-metric {
-      font-size: 13px;
-      color: var(--text-secondary);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .funnel-metric strong {
-      color: #111315;
-      font-weight: 600;
-    }
-
-    /* Clean Tables */
-    table.clean-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13.5px;
-      margin: 12px 0 4px;
-    }
-
-    table.clean-table th {
-      text-align: left;
-      font-weight: 600;
-      color: var(--text-secondary);
-      background: var(--bg-subtle);
-      padding: 9px 12px;
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    table.clean-table td {
-      padding: 9px 12px;
-      border-bottom: 1px solid var(--border-light);
-      color: var(--text-main);
-      vertical-align: top;
-    }
-
-    table.clean-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 2px 7px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
-
-    .badge-clean { background: var(--bg-accent-green); color: var(--accent-green); }
-    .badge-warn { background: var(--bg-accent-amber); color: var(--accent-amber); }
-    .badge-danger { background: var(--bg-accent-red); color: var(--accent-red); }
-    .badge-blue { background: var(--bg-accent-blue); color: var(--accent-blue-dark); }
-
-    /* Footer / Next in Series */
-    .series-footer {
-      margin-top: 48px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-light);
-      border-radius: 10px;
-      padding: 20px 24px;
-      break-inside: avoid;
-    }
-
-    /* Print / Save-as-PDF Optimization */
+    /* Print Rules */
     @page {
       size: letter;
-      margin: 14mm 15mm 14mm 15mm;
+      margin: 14mm 15mm;
     }
 
     @media print {
-      .utility-bar {
-        display: none !important;
-      }
-
       body {
-        background-color: #ffffff;
-        padding: 0;
+        background: #ffffff;
+        color: #111315;
         font-size: 10.5pt;
         line-height: 1.5;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
+        padding: 0;
       }
 
-      .article-container {
-        max-width: 100%;
+      h1, h2, h3, .figure-title, strong {
+        color: #000000 !important;
       }
 
-      h1 {
-        font-size: 24pt;
-      }
-
-      h2 {
-        font-size: 16pt;
-        margin-top: 22pt;
-        page-break-after: avoid;
-      }
-
-      h3 {
-        page-break-after: avoid;
-      }
-
-      .figure-card,
-      .stat-strip,
-      .comparison-grid,
-      .callout,
-      .series-footer {
+      .figure-card, .info-box, .callout {
+        background: #ffffff !important;
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+        color: #111315 !important;
         break-inside: avoid;
-        page-break-inside: avoid;
       }
 
-      .figure-card {
-        border: 1px solid #d4d0c5;
-        box-shadow: none;
-        margin: 14pt 0;
-        padding: 14pt 16pt;
+      code {
+        background: #f1f1f1 !important;
+        color: #000000 !important;
+        border: 1px solid #ddd !important;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="utility-bar">
-    <a href="../">&larr; Back to Devhitter Case Study</a>
-    <button class="print-btn" onclick="window.print()">Save / Print as PDF</button>
-  </div>
-
-  <article class="article-container">
+  <article>
     <!-- HEADER -->
     <header>
-      <div class="series-kicker">VoodooBox Engineering Series · Part 1</div>
+      <div class="series-tag">VoodooBox Series · Part 1</div>
       <h1>Hunting Supply-Chain Malware Across Developer Marketplaces</h1>
     </header>
-
-
 
     <!-- SECTION 1: THE PROBLEM -->
     <h2>Why Developer Tooling Needs a Different Playbook</h2>
@@ -535,6 +302,7 @@
       Everything in the supply-chain pipeline is built around one rule: <strong>watch everything cheaply, and spend VM time only on builds that earn it.</strong>
     </p>
 
+    <!-- DIAGRAM 1: ARCHITECTURE -->
     <div class="figure-card">
       <div class="figure-title">Every registry feeds one tracker; only questionable builds reach the sandbox</div>
       <div class="figure-subtitle">End-to-end supply chain architecture across 4 developer ecosystems</div>
@@ -542,111 +310,111 @@
       <svg viewBox="0 0 760 365" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
         <defs>
           <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#8c887d" />
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#9aa8b8" />
           </marker>
-          <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2563eb" />
+          <marker id="arrow-cyan" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38bdf8" />
           </marker>
         </defs>
 
         <!-- ROW 1: SOURCES -->
         <g transform="translate(0, 6)">
-          <rect x="10" y="0" width="172" height="58" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
-          <text x="96" y="23" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e2022">VS Code Marketplace</text>
-          <text x="96" y="40" text-anchor="middle" font-size="11" fill="#6e757c">Newest gallery · Install counts</text>
+          <rect x="10" y="0" width="172" height="58" rx="6" fill="#1e232d" stroke="#2e3646" stroke-width="1.2"/>
+          <text x="96" y="23" text-anchor="middle" font-size="12.5" font-weight="600" fill="#f0f4f8">VS Code Marketplace</text>
+          <text x="96" y="40" text-anchor="middle" font-size="11" fill="#9aa8b8">Newest gallery · Install counts</text>
 
-          <rect x="199" y="0" width="172" height="58" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
-          <text x="285" y="23" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e2022">Open VSX Registry</text>
-          <text x="285" y="40" text-anchor="middle" font-size="11" fill="#6e757c">Published SHA-256 · Uploader</text>
+          <rect x="199" y="0" width="172" height="58" rx="6" fill="#1e232d" stroke="#2e3646" stroke-width="1.2"/>
+          <text x="285" y="23" text-anchor="middle" font-size="12.5" font-weight="600" fill="#f0f4f8">Open VSX Registry</text>
+          <text x="285" y="40" text-anchor="middle" font-size="11" fill="#9aa8b8">Published SHA-256 · Uploader</text>
 
-          <rect x="388" y="0" width="172" height="58" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
-          <text x="474" y="23" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e2022">Cursor Extension Gallery</text>
-          <text x="474" y="40" text-anchor="middle" font-size="11" fill="#6e757c">Open VSX mirror + own builds</text>
+          <rect x="388" y="0" width="172" height="58" rx="6" fill="#1e232d" stroke="#2e3646" stroke-width="1.2"/>
+          <text x="474" y="23" text-anchor="middle" font-size="12.5" font-weight="600" fill="#f0f4f8">Cursor Extension Gallery</text>
+          <text x="474" y="40" text-anchor="middle" font-size="11" fill="#9aa8b8">Open VSX mirror + own builds</text>
 
-          <rect x="577" y="0" width="172" height="58" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
-          <text x="663" y="23" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e2022">Cursor Agent Plugins</text>
-          <text x="663" y="40" text-anchor="middle" font-size="11" fill="#6e757c">Git repos: hooks, skills, MCP</text>
+          <rect x="577" y="0" width="172" height="58" rx="6" fill="#1e232d" stroke="#2e3646" stroke-width="1.2"/>
+          <text x="663" y="23" text-anchor="middle" font-size="12.5" font-weight="600" fill="#f0f4f8">Cursor Agent Plugins</text>
+          <text x="663" y="40" text-anchor="middle" font-size="11" fill="#9aa8b8">Git repos: hooks, skills, MCP</text>
         </g>
 
         <!-- Arrows Row 1 -> Row 2 -->
-        <line x1="96" y1="64" x2="96" y2="88" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
-        <line x1="285" y1="64" x2="285" y2="88" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
-        <line x1="474" y1="64" x2="474" y2="88" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
-        <line x1="663" y1="64" x2="663" y2="88" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="96" y1="64" x2="96" y2="88" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="285" y1="64" x2="285" y2="88" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="474" y1="64" x2="474" y2="88" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="663" y1="64" x2="663" y2="88" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
 
         <!-- ROW 2: COLLECTORS -->
         <g transform="translate(0, 92)">
-          <rect x="10" y="0" width="172" height="56" rx="6" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.2"/>
-          <text x="96" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">VS Code Discovery</text>
-          <text x="96" y="39" text-anchor="middle" font-size="11" fill="#6e757c">Every 30 min · 5 newest pages</text>
+          <rect x="10" y="0" width="172" height="56" rx="6" fill="#262c38" stroke="#2e3646" stroke-width="1.2"/>
+          <text x="96" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#f0f4f8">VS Code Discovery</text>
+          <text x="96" y="39" text-anchor="middle" font-size="11" fill="#9aa8b8">Every 30 min · 5 newest pages</text>
 
-          <rect x="199" y="0" width="172" height="56" rx="6" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.2"/>
-          <text x="285" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">Open VSX Discovery</text>
-          <text x="285" y="39" text-anchor="middle" font-size="11" fill="#6e757c">Every 30 min · Hash-verified</text>
+          <rect x="199" y="0" width="172" height="56" rx="6" fill="#262c38" stroke="#2e3646" stroke-width="1.2"/>
+          <text x="285" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#f0f4f8">Open VSX Discovery</text>
+          <text x="285" y="39" text-anchor="middle" font-size="11" fill="#9aa8b8">Every 30 min · Hash-verified</text>
 
-          <rect x="388" y="0" width="172" height="56" rx="6" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.2"/>
-          <text x="474" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">Cursor Tamper Watch</text>
-          <text x="474" y="39" text-anchor="middle" font-size="11" fill="#6e757c">Every 15 min · Top 500 by ID</text>
+          <rect x="388" y="0" width="172" height="56" rx="6" fill="#262c38" stroke="#2e3646" stroke-width="1.2"/>
+          <text x="474" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#f0f4f8">Cursor Tamper Watch</text>
+          <text x="474" y="39" text-anchor="middle" font-size="11" fill="#9aa8b8">Every 15 min · Top 500 by ID</text>
 
-          <rect x="577" y="0" width="172" height="56" rx="6" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.2"/>
-          <text x="663" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">Plugin Catalogue</text>
-          <text x="663" y="39" text-anchor="middle" font-size="11" fill="#6e757c">Daily · Pinned commit vs HEAD</text>
+          <rect x="577" y="0" width="172" height="56" rx="6" fill="#262c38" stroke="#2e3646" stroke-width="1.2"/>
+          <text x="663" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#f0f4f8">Plugin Catalogue</text>
+          <text x="663" y="39" text-anchor="middle" font-size="11" fill="#9aa8b8">Daily · Pinned commit vs HEAD</text>
         </g>
 
         <!-- Arrows Row 2 -> Row 3 -->
-        <line x1="96" y1="148" x2="96" y2="172" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
-        <line x1="285" y1="148" x2="285" y2="172" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
-        <line x1="474" y1="148" x2="474" y2="172" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
-        <line x1="663" y1="148" x2="663" y2="172" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="96" y1="148" x2="96" y2="172" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="285" y1="148" x2="285" y2="172" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="474" y1="148" x2="474" y2="172" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="663" y1="148" x2="663" y2="172" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
 
         <!-- ROW 3: UNIFIED TRACKER HUB -->
         <g transform="translate(0, 176)">
-          <rect x="10" y="0" width="739" height="56" rx="8" fill="#eef4ff" stroke="#2563eb" stroke-width="1.6"/>
-          <text x="380" y="22" text-anchor="middle" font-size="13.5" font-weight="600" fill="#1e2022">
+          <rect x="10" y="0" width="739" height="56" rx="8" fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="1.5"/>
+          <text x="380" y="22" text-anchor="middle" font-size="13.5" font-weight="600" fill="#f0f4f8">
             Unified Identity Tracker · Keyed by (Marketplace, Extension ID, Version, Platform)
           </text>
-          <text x="380" y="40" text-anchor="middle" font-size="11.5" fill="#4a4f55">
+          <text x="380" y="40" text-anchor="middle" font-size="11.5" fill="#9aa8b8">
             50,800 extension versions · 598 Cursor builds hash-checked · 493 agent plugins · Separate files per registry
           </text>
         </g>
 
         <!-- Arrows Row 3 <-> Row 4 -->
-        <line x1="96" y1="232" x2="96" y2="256" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
-        <line x1="112" y1="256" x2="112" y2="235" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
-        <line x1="285" y1="232" x2="285" y2="256" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="96" y1="232" x2="96" y2="256" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="112" y1="256" x2="112" y2="235" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="285" y1="232" x2="285" y2="256" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
 
         <!-- ROW 4: PIPELINE STAGES -->
         <g transform="translate(0, 260)">
-          <rect x="10" y="0" width="172" height="58" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
-          <text x="96" y="22" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e2022">Sleeper Watch</text>
-          <text x="96" y="38" text-anchor="middle" font-size="11" fill="#6e757c">Hourly poll of &lt;4 KB stubs</text>
-          <text x="96" y="51" text-anchor="middle" font-size="10.5" fill="#6e757c">Version flip triggers triage</text>
+          <rect x="10" y="0" width="172" height="58" rx="6" fill="#1e232d" stroke="#2e3646" stroke-width="1.2"/>
+          <text x="96" y="22" text-anchor="middle" font-size="12.5" font-weight="600" fill="#f0f4f8">Sleeper Watch</text>
+          <text x="96" y="38" text-anchor="middle" font-size="11" fill="#9aa8b8">Hourly poll of &lt;4 KB stubs</text>
+          <text x="96" y="51" text-anchor="middle" font-size="10.5" fill="#9aa8b8">Version flip triggers triage</text>
 
-          <rect x="199" y="0" width="172" height="58" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
-          <text x="285" y="22" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e2022">7-Phase Static Triage</text>
-          <text x="285" y="38" text-anchor="middle" font-size="11" fill="#6e757c">Rules, entropy, supply chain</text>
-          <text x="285" y="51" text-anchor="middle" font-size="10.5" fill="#6e757c">+ Local AI "Vibe Check"</text>
+          <rect x="199" y="0" width="172" height="58" rx="6" fill="#1e232d" stroke="#2e3646" stroke-width="1.2"/>
+          <text x="285" y="22" text-anchor="middle" font-size="12.5" font-weight="600" fill="#f0f4f8">7-Phase Static Triage</text>
+          <text x="285" y="38" text-anchor="middle" font-size="11" fill="#9aa8b8">Rules, entropy, supply chain</text>
+          <text x="285" y="51" text-anchor="middle" font-size="10.5" fill="#9aa8b8">+ Local AI "Vibe Check"</text>
 
-          <rect x="388" y="0" width="172" height="58" rx="6" fill="#eef4ff" stroke="#2563eb" stroke-width="1.5"/>
-          <text x="474" y="22" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1d4ed8">The Chamber (Sandbox)</text>
-          <text x="474" y="38" text-anchor="middle" font-size="11" fill="#4a4f55">Windows VM + Honeytrap</text>
-          <text x="474" y="51" text-anchor="middle" font-size="10.5" fill="#4a4f55">Escalated builds only (~1.3%)</text>
+          <rect x="388" y="0" width="172" height="58" rx="6" fill="rgba(56, 189, 248, 0.12)" stroke="#38bdf8" stroke-width="1.4"/>
+          <text x="474" y="22" text-anchor="middle" font-size="12.5" font-weight="600" fill="#38bdf8">The Chamber (Sandbox)</text>
+          <text x="474" y="38" text-anchor="middle" font-size="11" fill="#f0f4f8">Windows VM + Honeytrap</text>
+          <text x="474" y="51" text-anchor="middle" font-size="10.5" fill="#9aa8b8">Escalated builds only (~1.3%)</text>
 
-          <rect x="577" y="0" width="172" height="58" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
-          <text x="663" y="22" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e2022">Outputs &amp; Campaigns</text>
-          <text x="663" y="38" text-anchor="middle" font-size="11" fill="#6e757c">Public ExtensionDetox feed</text>
-          <text x="663" y="51" text-anchor="middle" font-size="10.5" fill="#6e757c">Campaign clustering &amp; rules</text>
+          <rect x="577" y="0" width="172" height="58" rx="6" fill="#1e232d" stroke="#2e3646" stroke-width="1.2"/>
+          <text x="663" y="22" text-anchor="middle" font-size="12.5" font-weight="600" fill="#f0f4f8">Outputs &amp; Campaigns</text>
+          <text x="663" y="38" text-anchor="middle" font-size="11" fill="#9aa8b8">Public ExtensionDetox feed</text>
+          <text x="663" y="51" text-anchor="middle" font-size="10.5" fill="#9aa8b8">Campaign clustering &amp; rules</text>
         </g>
 
         <!-- Horizontal flow arrows in Row 4 -->
-        <line x1="182" y1="289" x2="196" y2="289" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
-        <line x1="371" y1="289" x2="385" y2="289" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
-        <line x1="560" y1="289" x2="574" y2="289" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="182" y1="289" x2="196" y2="289" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="371" y1="289" x2="385" y2="289" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+        <line x1="560" y1="289" x2="574" y2="289" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
 
         <!-- ROW 5: TAKEDOWN GRADING (DASHED) -->
         <g transform="translate(0, 332)">
-          <rect x="10" y="0" width="739" height="28" rx="5" fill="#f5f4ef" stroke="#c8c4b7" stroke-dasharray="4 3" stroke-width="1.2"/>
-          <text x="380" y="18" text-anchor="middle" font-size="11.5" fill="#5a6065">
+          <rect x="10" y="0" width="739" height="28" rx="5" fill="#262c38" stroke="#2e3646" stroke-dasharray="4 3" stroke-width="1.2"/>
+          <text x="380" y="18" text-anchor="middle" font-size="11.5" fill="#9aa8b8">
             External Takedown Lists (Microsoft 2,450 IDs · Open VSX 1,036 IDs) (used strictly afterwards to grade accuracy; never shown to AI models)
           </text>
         </g>
@@ -676,58 +444,58 @@
 
       <svg viewBox="0 0 760 285" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
         <!-- Divider -->
-        <line x1="380" y1="10" x2="380" y2="275" stroke="#e3e0d6" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <line x1="380" y1="10" x2="380" y2="275" stroke="#2e3646" stroke-width="1.5" stroke-dasharray="4 4"/>
 
         <!-- LEFT SIDE: CURSOR TAMPER CHECK -->
-        <text x="185" y="22" text-anchor="middle" font-size="13" font-weight="600" fill="#1e2022">Workflow A: Cross-Registry Tamper Check (Every 15m)</text>
+        <text x="185" y="22" text-anchor="middle" font-size="13" font-weight="600" fill="#f0f4f8">Workflow A: Cross-Registry Tamper Check (Every 15m)</text>
 
-        <rect x="45" y="38" width="280" height="42" rx="6" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.2"/>
-        <text x="185" y="57" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">1. Poll Top 500 Extensions on Cursor</text>
-        <text x="185" y="72" text-anchor="middle" font-size="10.5" fill="#6e757c">Cursor ignores date sorting, so the tracker queries by ID</text>
+        <rect x="45" y="38" width="280" height="42" rx="6" fill="#262c38" stroke="#2e3646" stroke-width="1.2"/>
+        <text x="185" y="57" text-anchor="middle" font-size="12" font-weight="600" fill="#f0f4f8">1. Poll Top 500 Extensions on Cursor</text>
+        <text x="185" y="72" text-anchor="middle" font-size="10.5" fill="#9aa8b8">Cursor ignores date sorting, so the tracker queries by ID</text>
 
-        <line x1="185" y1="80" x2="185" y2="100" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="185" y1="80" x2="185" y2="100" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
 
-        <rect x="45" y="104" width="280" height="42" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
-        <text x="185" y="123" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">2. Stream &amp; Hash Against Upstream Source</text>
-        <text x="185" y="138" text-anchor="middle" font-size="10.5" fill="#6e757c">Compare SHA-256 with Open VSX or VS Code build</text>
+        <rect x="45" y="104" width="280" height="42" rx="6" fill="#1e232d" stroke="#2e3646" stroke-width="1.2"/>
+        <text x="185" y="123" text-anchor="middle" font-size="12" font-weight="600" fill="#f0f4f8">2. Stream &amp; Hash Against Upstream Source</text>
+        <text x="185" y="138" text-anchor="middle" font-size="10.5" fill="#9aa8b8">Compare SHA-256 with Open VSX or VS Code build</text>
 
-        <line x1="115" y1="146" x2="95" y2="174" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
-        <line x1="255" y1="146" x2="275" y2="174" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="115" y1="146" x2="95" y2="174" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="255" y1="146" x2="275" y2="174" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
 
         <!-- Left outcome: Identical -->
-        <rect x="18" y="178" width="145" height="66" rx="6" fill="#eefbf3" stroke="#15803d" stroke-width="1.3"/>
-        <text x="90" y="198" text-anchor="middle" font-size="11.5" font-weight="600" fill="#15803d">Bytes Identical</text>
-        <text x="90" y="215" text-anchor="middle" font-size="10.5" fill="#4a4f55">Record hash &amp; discard</text>
-        <text x="90" y="231" text-anchor="middle" font-size="10" fill="#6e757c">(446 builds matched)</text>
+        <rect x="18" y="178" width="145" height="66" rx="6" fill="rgba(52, 211, 153, 0.12)" stroke="#34d399" stroke-width="1.3"/>
+        <text x="90" y="198" text-anchor="middle" font-size="11.5" font-weight="600" fill="#34d399">Bytes Identical</text>
+        <text x="90" y="215" text-anchor="middle" font-size="10.5" fill="#f0f4f8">Record hash &amp; discard</text>
+        <text x="90" y="231" text-anchor="middle" font-size="10" fill="#9aa8b8">(446 builds matched)</text>
 
         <!-- Right outcome: Alert -->
-        <rect x="175" y="178" width="190" height="92" rx="6" fill="#fef1f1" stroke="#b91c1c" stroke-width="1.3"/>
-        <text x="270" y="197" text-anchor="middle" font-size="11.5" font-weight="600" fill="#b91c1c">Mismatch or Ghost Build</text>
-        <text x="187" y="215" font-size="10.5" fill="#1e2022">• <tspan font-weight="600">divergent:</tspan> Same v#, diff bytes</text>
-        <text x="187" y="230" font-size="10.5" fill="#1e2022">• <tspan font-weight="600">cursor_only:</tspan> Missing upstream</text>
-        <text x="187" y="245" font-size="10.5" fill="#1e2022">• <tspan font-weight="600">rollback:</tspan> Version disappeared</text>
-        <text x="270" y="262" text-anchor="middle" font-size="10" font-weight="600" fill="#b91c1c">→ Archive .cursor.vsix &amp; Triage</text>
+        <rect x="175" y="178" width="190" height="92" rx="6" fill="rgba(248, 113, 113, 0.12)" stroke="#f87171" stroke-width="1.3"/>
+        <text x="270" y="197" text-anchor="middle" font-size="11.5" font-weight="600" fill="#f87171">Mismatch or Ghost Build</text>
+        <text x="187" y="215" font-size="10.5" fill="#f0f4f8">• <tspan font-weight="600">divergent:</tspan> Same v#, diff bytes</text>
+        <text x="187" y="230" font-size="10.5" fill="#f0f4f8">• <tspan font-weight="600">cursor_only:</tspan> Missing upstream</text>
+        <text x="187" y="245" font-size="10.5" fill="#f0f4f8">• <tspan font-weight="600">rollback:</tspan> Version disappeared</text>
+        <text x="270" y="262" text-anchor="middle" font-size="10" font-weight="600" fill="#f87171">→ Archive .cursor.vsix &amp; Triage</text>
 
         <!-- RIGHT SIDE: SLEEPER WATCH -->
-        <text x="575" y="22" text-anchor="middle" font-size="13" font-weight="600" fill="#1e2022">Workflow B: "Sleeper" Placeholder Watch (Hourly)</text>
+        <text x="575" y="22" text-anchor="middle" font-size="13" font-weight="600" fill="#f0f4f8">Workflow B: "Sleeper" Placeholder Watch (Hourly)</text>
 
-        <rect x="425" y="38" width="300" height="42" rx="6" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.2"/>
-        <text x="575" y="57" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">1. Flag Tiny Extensions (&lt; 4 KB)</text>
-        <text x="575" y="72" text-anchor="middle" font-size="10.5" fill="#6e757c">Harmless v0.0.1 stubs pass initial triage (398 watched)</text>
+        <rect x="425" y="38" width="300" height="42" rx="6" fill="#262c38" stroke="#2e3646" stroke-width="1.2"/>
+        <text x="575" y="57" text-anchor="middle" font-size="12" font-weight="600" fill="#f0f4f8">1. Flag Tiny Extensions (&lt; 4 KB)</text>
+        <text x="575" y="72" text-anchor="middle" font-size="10.5" fill="#9aa8b8">Harmless v0.0.1 stubs pass initial triage (398 watched)</text>
 
-        <line x1="575" y1="80" x2="575" y2="100" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="575" y1="80" x2="575" y2="100" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
 
-        <rect x="425" y="104" width="300" height="42" rx="6" fill="#ffffff" stroke="#d5d1c6" stroke-width="1.2"/>
-        <text x="575" y="123" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">2. Re-Poll Every Watched ID Hourly</text>
-        <text x="575" y="138" text-anchor="middle" font-size="10.5" fill="#6e757c">Catches silent updates that skip "Newest" pages</text>
+        <rect x="425" y="104" width="300" height="42" rx="6" fill="#1e232d" stroke="#2e3646" stroke-width="1.2"/>
+        <text x="575" y="123" text-anchor="middle" font-size="12" font-weight="600" fill="#f0f4f8">2. Re-Poll Every Watched ID Hourly</text>
+        <text x="575" y="138" text-anchor="middle" font-size="10.5" fill="#9aa8b8">Catches silent updates that skip "Newest" pages</text>
 
-        <line x1="575" y1="146" x2="575" y2="174" stroke="#2563eb" stroke-width="1.4" marker-end="url(#arrow-blue)"/>
+        <line x1="575" y1="146" x2="575" y2="174" stroke="#38bdf8" stroke-width="1.4" marker-end="url(#arrow-cyan)"/>
 
-        <rect x="425" y="178" width="300" height="92" rx="6" fill="#eef4ff" stroke="#2563eb" stroke-width="1.4"/>
-        <text x="575" y="197" text-anchor="middle" font-size="12" font-weight="600" fill="#1d4ed8">3. Version Flip Detected (1.4 KB → 33 KB)</text>
-        <text x="439" y="216" font-size="10.5" fill="#1e2022">• Immediate 7-phase static triage + AI Vibe Check</text>
-        <text x="439" y="232" font-size="10.5" fill="#1e2022">• Questionable flips escalate straight to The Chamber</text>
-        <text x="575" y="256" text-anchor="middle" font-size="10.5" font-weight="600" fill="#1d4ed8">Caught 9 Boardflow RAT sleepers in a 33–66 KB band</text>
+        <rect x="425" y="178" width="300" height="92" rx="6" fill="rgba(56, 189, 248, 0.12)" stroke="#38bdf8" stroke-width="1.4"/>
+        <text x="575" y="197" text-anchor="middle" font-size="12" font-weight="600" fill="#38bdf8">3. Version Flip Detected (1.4 KB → 33 KB)</text>
+        <text x="439" y="216" font-size="10.5" fill="#f0f4f8">• Immediate 7-phase static triage + AI Vibe Check</text>
+        <text x="439" y="232" font-size="10.5" fill="#f0f4f8">• Questionable flips escalate straight to The Chamber</text>
+        <text x="575" y="256" text-anchor="middle" font-size="10.5" font-weight="600" fill="#38bdf8">Caught 9 Boardflow RAT sleepers in a 33–66 KB band</text>
       </svg>
 
       <div class="figure-caption">
@@ -755,58 +523,58 @@
 
       <svg viewBox="0 0 760 250" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
         <!-- Box 1: Static Triage -->
-        <rect x="10" y="10" width="225" height="230" rx="8" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.3"/>
-        <text x="24" y="32" font-size="12.5" font-weight="600" fill="#1e2022">1. Fast Static Triage</text>
-        <text x="24" y="48" font-size="10.5" fill="#6e757c">Seconds of CPU across 7 checks:</text>
+        <rect x="10" y="10" width="225" height="230" rx="8" fill="#262c38" stroke="#2e3646" stroke-width="1.3"/>
+        <text x="24" y="32" font-size="12.5" font-weight="600" fill="#f0f4f8">1. Fast Static Triage</text>
+        <text x="24" y="48" font-size="10.5" fill="#9aa8b8">Seconds of CPU across 7 checks:</text>
 
-        <g font-size="10.5" fill="#1e2022">
+        <g font-size="10.5" fill="#f0f4f8">
           <text x="24" y="70">• <tspan font-weight="600">Metadata:</tspan> Startup events, typos</text>
           <text x="24" y="88">• <tspan font-weight="600">Supply chain:</tspan> Undeclared pkgs</text>
           <text x="24" y="106">• <tspan font-weight="600">Forensics:</tspan> Fake magic bytes</text>
           <text x="24" y="124">• <tspan font-weight="600">Threat intel:</tspan> IPs, webhooks</text>
           <text x="24" y="142">• <tspan font-weight="600">YARA rules:</tspan> Campaign patterns</text>
-          <text x="24" y="160">• <tspan font-weight="600" fill="#1d4ed8">AI Vibe Check:</tspan> Store vs code</text>
+          <text x="24" y="160">• <tspan font-weight="600" fill="#38bdf8">AI Vibe Check:</tspan> Store vs code</text>
           <text x="24" y="178">• <tspan font-weight="600">Evidence verifier:</tspan> Grounds facts</text>
         </g>
-        <text x="24" y="210" font-size="10" font-weight="600" fill="#6e757c">Obfuscated scripts or payloads?</text>
-        <text x="24" y="225" font-size="10" fill="#2563eb">→ Hands off to Unpacking Loop</text>
+        <text x="24" y="210" font-size="10" font-weight="600" fill="#9aa8b8">Obfuscated scripts or payloads?</text>
+        <text x="24" y="225" font-size="10" fill="#38bdf8">→ Hands off to Unpacking Loop</text>
 
         <!-- Arrow Box 1 -> Box 2 -->
-        <line x1="235" y1="115" x2="265" y2="115" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+        <line x1="235" y1="115" x2="265" y2="115" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
 
         <!-- Box 2: Layered Unpacker & Unpack Agent -->
-        <rect x="268" y="10" width="245" height="230" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.4"/>
-        <text x="282" y="32" font-size="12.5" font-weight="600" fill="#1d4ed8">2. Multi-Layer Unpacking</text>
-        <text x="282" y="48" font-size="10.5" fill="#6e757c">Isolated REMnux environment (no network)</text>
+        <rect x="268" y="10" width="245" height="230" rx="8" fill="#1e232d" stroke="#38bdf8" stroke-width="1.4"/>
+        <text x="282" y="32" font-size="12.5" font-weight="600" fill="#38bdf8">2. Multi-Layer Unpacking</text>
+        <text x="282" y="48" font-size="10.5" fill="#9aa8b8">Isolated REMnux environment (no network)</text>
 
-        <g font-size="10.5" fill="#1e2022">
-          <rect x="280" y="60" width="220" height="48" rx="5" fill="#f8f7f2" stroke="#e3e0d6"/>
-          <text x="288" y="76" font-weight="600" fill="#1e2022">Static Layer Unpacker:</text>
-          <text x="288" y="92" font-size="10" fill="#4a4f55">Peels Base64, obfuscator.io, VBE,</text>
-          <text x="288" y="103" font-size="10" fill="#4a4f55">PowerShell folding, UPX, archives</text>
+        <g font-size="10.5" fill="#f0f4f8">
+          <rect x="280" y="60" width="220" height="48" rx="5" fill="#262c38" stroke="#2e3646"/>
+          <text x="288" y="76" font-weight="600" fill="#f0f4f8">Static Layer Unpacker:</text>
+          <text x="288" y="92" font-size="10" fill="#d2dae3">Peels Base64, obfuscator.io, VBE,</text>
+          <text x="288" y="103" font-size="10" fill="#d2dae3">PowerShell folding, UPX, archives</text>
 
-          <line x1="390" y1="108" x2="390" y2="124" stroke="#8c887d" stroke-width="1.2" marker-end="url(#arrow)"/>
+          <line x1="390" y1="108" x2="390" y2="124" stroke="#9aa8b8" stroke-width="1.2" marker-end="url(#arrow)"/>
 
-          <rect x="280" y="126" width="220" height="66" rx="5" fill="#eef4ff" stroke="#bfdbfe"/>
-          <text x="288" y="142" font-weight="600" fill="#1d4ed8">AI Unpack Agent (if still opaque):</text>
-          <text x="288" y="157" font-size="10" fill="#1e2022">Local model in closed loop (max 36 turns)</text>
-          <text x="288" y="171" font-size="10" fill="#4a4f55">Runs safe Node stubs &amp; AST decoders</text>
-          <text x="288" y="184" font-size="10" fill="#4a4f55">Outputs recovered payload as child task</text>
+          <rect x="280" y="126" width="220" height="66" rx="5" fill="rgba(56, 189, 248, 0.12)" stroke="#38bdf8"/>
+          <text x="288" y="142" font-weight="600" fill="#38bdf8">AI Unpack Agent (if still opaque):</text>
+          <text x="288" y="157" font-size="10" fill="#f0f4f8">Local model in closed loop (max 36 turns)</text>
+          <text x="288" y="171" font-size="10" fill="#d2dae3">Runs safe Node stubs &amp; AST decoders</text>
+          <text x="288" y="184" font-size="10" fill="#d2dae3">Outputs recovered payload as child task</text>
         </g>
-        <text x="282" y="212" font-size="10" font-weight="600" fill="#15803d">Self-learning: Engineer writes new</text>
-        <text x="282" y="226" font-size="10" fill="#15803d">unpacker plugins for recurring formats</text>
+        <text x="282" y="212" font-size="10" font-weight="600" fill="#34d399">Self-learning: Engineer writes new</text>
+        <text x="282" y="226" font-size="10" fill="#34d399">unpacker plugins for recurring formats</text>
 
         <!-- Gate Arrow Box 2 -> Box 3 -->
-        <line x1="513" y1="115" x2="540" y2="115" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
-        <text x="527" y="105" text-anchor="middle" font-size="9" font-weight="600" fill="#1d4ed8">Gate</text>
-        <text x="527" y="132" text-anchor="middle" font-size="8.5" fill="#6e757c">≥ 0.45 / crit</text>
+        <line x1="513" y1="115" x2="540" y2="115" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+        <text x="527" y="105" text-anchor="middle" font-size="9" font-weight="600" fill="#38bdf8">Gate</text>
+        <text x="527" y="132" text-anchor="middle" font-size="8.5" fill="#9aa8b8">≥ 0.45 / crit</text>
 
         <!-- Box 3: The Chamber -->
-        <rect x="542" y="10" width="208" height="230" rx="8" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.3"/>
-        <text x="554" y="32" font-size="12.5" font-weight="600" fill="#1e2022">3. The Chamber</text>
-        <text x="554" y="48" font-size="10.5" fill="#6e757c">Full Windows VM Detonation</text>
+        <rect x="542" y="10" width="208" height="230" rx="8" fill="#262c38" stroke="#2e3646" stroke-width="1.3"/>
+        <text x="554" y="32" font-size="12.5" font-weight="600" fill="#f0f4f8">3. The Chamber</text>
+        <text x="554" y="48" font-size="10.5" fill="#9aa8b8">Full Windows VM Detonation</text>
 
-        <g font-size="10" fill="#1e2022">
+        <g font-size="10" fill="#f0f4f8">
           <text x="554" y="70">• Reverts to clean VM snapshot</text>
           <text x="554" y="87">• Rotates SMBIOS, MAC, user</text>
           <text x="554" y="104">• Honeytrap workspace &amp; files</text>
@@ -816,8 +584,8 @@
           <text x="554" y="172">• Scoped to extension host</text>
           <text x="554" y="189">• Sysmon + Rust agent stream</text>
         </g>
-        <text x="554" y="215" font-size="10" font-weight="600" fill="#b91c1c">Captured second stages</text>
-        <text x="554" y="228" font-size="10" fill="#b91c1c">loop back as child tasks</text>
+        <text x="554" y="215" font-size="10" font-weight="600" fill="#f87171">Captured second stages</text>
+        <text x="554" y="228" font-size="10" fill="#f87171">loop back as child tasks</text>
       </svg>
 
       <div class="figure-caption">
@@ -855,80 +623,80 @@
       <svg viewBox="0 0 760 310" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
         <!-- Stage 1 -->
         <g transform="translate(10, 10)">
-          <rect x="0" y="0" width="165" height="180" rx="8" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.3"/>
-          <text x="82" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">Step 1: Intake &amp; Triage</text>
-          <text x="82" y="44" text-anchor="middle" font-size="10.5" fill="#6e757c">Runs every 15 to 30 min</text>
-          <line x1="15" y1="54" x2="150" y2="54" stroke="#e3e0d6"/>
-          <text x="14" y="74" font-size="10.5" fill="#1e2022">• Scrapes new versions</text>
-          <text x="14" y="94" font-size="10.5" fill="#1e2022">• Hashes mirror builds</text>
-          <text x="14" y="114" font-size="10.5" fill="#1e2022">• 7 static score checks</text>
-          <text x="14" y="134" font-size="10.5" fill="#1e2022">• AI Vibe Check on text</text>
-          <rect x="12" y="148" width="141" height="22" rx="4" fill="#eefbf3" stroke="#15803d"/>
-          <text x="82" y="163" text-anchor="middle" font-size="9.5" font-weight="600" fill="#15803d">97% judged clean here</text>
+          <rect x="0" y="0" width="165" height="180" rx="8" fill="#262c38" stroke="#2e3646" stroke-width="1.3"/>
+          <text x="82" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#f0f4f8">Step 1: Intake &amp; Triage</text>
+          <text x="82" y="44" text-anchor="middle" font-size="10.5" fill="#9aa8b8">Runs every 15 to 30 min</text>
+          <line x1="15" y1="54" x2="150" y2="54" stroke="#2e3646"/>
+          <text x="14" y="74" font-size="10.5" fill="#f0f4f8">• Scrapes new versions</text>
+          <text x="14" y="94" font-size="10.5" fill="#f0f4f8">• Hashes mirror builds</text>
+          <text x="14" y="114" font-size="10.5" fill="#f0f4f8">• 7 static score checks</text>
+          <text x="14" y="134" font-size="10.5" fill="#f0f4f8">• AI Vibe Check on text</text>
+          <rect x="12" y="148" width="141" height="22" rx="4" fill="rgba(52, 211, 153, 0.12)" stroke="#34d399"/>
+          <text x="82" y="163" text-anchor="middle" font-size="9.5" font-weight="600" fill="#34d399">97% judged clean here</text>
         </g>
 
         <!-- Arrow 1 -> 2 -->
-        <line x1="175" y1="95" x2="195" y2="95" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+        <line x1="175" y1="95" x2="195" y2="95" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
 
         <!-- Stage 2 -->
         <g transform="translate(195, 10)">
-          <rect x="0" y="0" width="165" height="180" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.4"/>
-          <text x="82" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#1d4ed8">Step 2: Unpacking</text>
-          <text x="82" y="44" text-anchor="middle" font-size="10.5" fill="#6e757c">REMnux container (offline)</text>
-          <line x1="15" y1="54" x2="150" y2="54" stroke="#bfdbfe"/>
-          <text x="14" y="74" font-size="10.5" fill="#1e2022">• Peels nested Base64</text>
-          <text x="14" y="94" font-size="10.5" fill="#1e2022">• Unfolds obfuscators</text>
-          <text x="14" y="114" font-size="10.5" fill="#1e2022">• AI Agent runs stubs</text>
-          <text x="14" y="134" font-size="10.5" fill="#1e2022">• Proves intent to sink</text>
-          <rect x="12" y="148" width="141" height="22" rx="4" fill="#eef4ff" stroke="#bfdbfe"/>
-          <text x="82" y="163" text-anchor="middle" font-size="9.5" font-weight="600" fill="#1d4ed8">Reveals hidden code</text>
+          <rect x="0" y="0" width="165" height="180" rx="8" fill="#1e232d" stroke="#38bdf8" stroke-width="1.4"/>
+          <text x="82" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#38bdf8">Step 2: Unpacking</text>
+          <text x="82" y="44" text-anchor="middle" font-size="10.5" fill="#9aa8b8">REMnux container (offline)</text>
+          <line x1="15" y1="54" x2="150" y2="54" stroke="#2e3646"/>
+          <text x="14" y="74" font-size="10.5" fill="#f0f4f8">• Peels nested Base64</text>
+          <text x="14" y="94" font-size="10.5" fill="#f0f4f8">• Unfolds obfuscators</text>
+          <text x="14" y="114" font-size="10.5" fill="#f0f4f8">• AI Agent runs stubs</text>
+          <text x="14" y="134" font-size="10.5" fill="#f0f4f8">• Proves intent to sink</text>
+          <rect x="12" y="148" width="141" height="22" rx="4" fill="rgba(56, 189, 248, 0.12)" stroke="#38bdf8"/>
+          <text x="82" y="163" text-anchor="middle" font-size="9.5" font-weight="600" fill="#38bdf8">Reveals hidden code</text>
         </g>
 
         <!-- Arrow 2 -> 3 -->
-        <line x1="360" y1="95" x2="380" y2="95" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+        <line x1="360" y1="95" x2="380" y2="95" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
 
         <!-- Stage 3 -->
         <g transform="translate(380, 10)">
-          <rect x="0" y="0" width="175" height="180" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.4"/>
-          <text x="87" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#1d4ed8">Step 3: The Chamber</text>
-          <text x="87" y="44" text-anchor="middle" font-size="10.5" fill="#6e757c">Windows 10 Sandbox VM</text>
-          <line x1="15" y1="54" x2="160" y2="54" stroke="#bfdbfe"/>
-          <text x="14" y="74" font-size="10.5" fill="#1e2022">• Reverts to clean VM</text>
-          <text x="14" y="94" font-size="10.5" fill="#1e2022">• Changes machine identity</text>
-          <text x="14" y="114" font-size="10.5" fill="#1e2022">• Baits with fake secrets</text>
-          <text x="14" y="134" font-size="10.5" fill="#1e2022">• Provokes code execution</text>
-          <rect x="12" y="148" width="151" height="22" rx="4" fill="#fef1f1" stroke="#b91c1c"/>
-          <text x="87" y="163" text-anchor="middle" font-size="9.5" font-weight="600" fill="#b91c1c">Only 1.3% earns a run</text>
+          <rect x="0" y="0" width="175" height="180" rx="8" fill="#1e232d" stroke="#38bdf8" stroke-width="1.4"/>
+          <text x="87" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#38bdf8">Step 3: The Chamber</text>
+          <text x="87" y="44" text-anchor="middle" font-size="10.5" fill="#9aa8b8">Windows 10 Sandbox VM</text>
+          <line x1="15" y1="54" x2="160" y2="54" stroke="#2e3646"/>
+          <text x="14" y="74" font-size="10.5" fill="#f0f4f8">• Reverts to clean VM</text>
+          <text x="14" y="94" font-size="10.5" fill="#f0f4f8">• Changes machine identity</text>
+          <text x="14" y="114" font-size="10.5" fill="#f0f4f8">• Baits with fake secrets</text>
+          <text x="14" y="134" font-size="10.5" fill="#f0f4f8">• Provokes code execution</text>
+          <rect x="12" y="148" width="151" height="22" rx="4" fill="rgba(248, 113, 113, 0.12)" stroke="#f87171"/>
+          <text x="87" y="163" text-anchor="middle" font-size="9.5" font-weight="600" fill="#f87171">Only 1.3% earns a run</text>
         </g>
 
         <!-- Arrow 3 -> 4 -->
-        <line x1="555" y1="95" x2="575" y2="95" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+        <line x1="555" y1="95" x2="575" y2="95" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
 
         <!-- Stage 4 -->
         <g transform="translate(575, 10)">
-          <rect x="0" y="0" width="175" height="180" rx="8" fill="#f8f7f2" stroke="#d5d1c6" stroke-width="1.3"/>
-          <text x="87" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#1e2022">Step 4: Evidence &amp; Loop</text>
-          <text x="87" y="44" text-anchor="middle" font-size="10.5" fill="#6e757c">Recorded Proof</text>
-          <line x1="15" y1="54" x2="160" y2="54" stroke="#e3e0d6"/>
-          <text x="14" y="74" font-size="10.5" fill="#1e2022">• Scoped process tree</text>
-          <text x="14" y="94" font-size="10.5" fill="#1e2022">• Dumps injected memory</text>
-          <text x="14" y="114" font-size="10.5" fill="#1e2022">• C2 config extraction</text>
-          <text x="14" y="134" font-size="10.5" fill="#1e2022">• Final weighted verdict</text>
-          <rect x="12" y="148" width="151" height="22" rx="4" fill="#eef4ff" stroke="#2563eb"/>
-          <text x="87" y="163" text-anchor="middle" font-size="9.5" font-weight="600" fill="#1d4ed8">Published to Detox feed</text>
+          <rect x="0" y="0" width="175" height="180" rx="8" fill="#262c38" stroke="#2e3646" stroke-width="1.3"/>
+          <text x="87" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#f0f4f8">Step 4: Evidence &amp; Loop</text>
+          <text x="87" y="44" text-anchor="middle" font-size="10.5" fill="#9aa8b8">Recorded Proof</text>
+          <line x1="15" y1="54" x2="160" y2="54" stroke="#2e3646"/>
+          <text x="14" y="74" font-size="10.5" fill="#f0f4f8">• Scoped process tree</text>
+          <text x="14" y="94" font-size="10.5" fill="#f0f4f8">• Dumps injected memory</text>
+          <text x="14" y="114" font-size="10.5" fill="#f0f4f8">• C2 config extraction</text>
+          <text x="14" y="134" font-size="10.5" fill="#f0f4f8">• Final weighted verdict</text>
+          <rect x="12" y="148" width="151" height="22" rx="4" fill="rgba(56, 189, 248, 0.12)" stroke="#38bdf8"/>
+          <text x="87" y="163" text-anchor="middle" font-size="9.5" font-weight="600" fill="#38bdf8">Published to Detox feed</text>
         </g>
 
         <!-- Re-entry loop for child tasks -->
-        <path d="M 662 190 L 662 215 L 277 215 L 277 195" fill="none" stroke="#b91c1c" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
-        <text x="470" y="228" text-anchor="middle" font-size="10" font-weight="600" fill="#b91c1c">
+        <path d="M 662 190 L 662 215 L 277 215 L 277 195" fill="none" stroke="#f87171" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+        <text x="470" y="228" text-anchor="middle" font-size="10" font-weight="600" fill="#f87171">
           Dropped files &amp; second-stage payloads re-enter as Child Tasks for static analysis
         </text>
 
         <!-- Sleeper Watch Banner underneath -->
         <g transform="translate(10, 245)">
-          <rect x="0" y="0" width="740" height="52" rx="6" fill="#fef7e6" stroke="#d97706" stroke-width="1.2"/>
-          <text x="14" y="21" font-size="11.5" font-weight="600" fill="#d97706">Continuous Background Watch: The Sleeper Sentry</text>
-          <text x="14" y="38" font-size="10.5" fill="#4a4f55">
+          <rect x="0" y="0" width="740" height="52" rx="6" fill="rgba(251, 191, 36, 0.08)" stroke="#fbbf24" stroke-width="1.2"/>
+          <text x="14" y="21" font-size="11.5" font-weight="600" fill="#fbbf24">Continuous Background Watch: The Sleeper Sentry</text>
+          <text x="14" y="38" font-size="10.5" fill="#d2dae3">
             Extensions under 4 KB don't drop off the radar. The lab polls them every hour. If an author pushes an update, the new version jumps right into Step 1.
           </text>
         </g>
