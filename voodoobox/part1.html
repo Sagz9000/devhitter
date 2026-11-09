@@ -431,10 +431,10 @@
       Why track four different sources instead of just Microsoft's official VS Code Marketplace? Because modern developers use AI-first forks like <strong>Cursor</strong> and <strong>Windsurf</strong>, which pull from <strong>Open VSX</strong> or their own mirrors.
     </p>
     <p>
-      The blind spot became clear when Microsoft published an advisory on a malicious extension masquerading as Claude Code on Cursor's marketplace (<a href="https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/" target="_blank" rel="noopener">Microsoft Security Blog: Inside malicious Claude Code-branded Cursor extension persistent SSH backdoor</a>). Attackers published malicious builds (<code>2.1.312</code> and <code>2.1.313</code>) that opened a reverse SSH tunnel and harvested credentials.
+      The blind spot became clear when Microsoft published an advisory on a malicious extension masquerading as Claude Code on Cursor's marketplace (<a href="https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/" target="_blank" rel="noopener">Microsoft Security Blog: Inside malicious Claude Code-branded Cursor extension persistent SSH backdoor</a>). Attackers published malicious builds that opened a reverse SSH tunnel and harvested credentials.
     </p>
     <p>
-      That incident is exactly why I built Cursor marketplace support into VoodooBox. At the time, my tracker only monitored the VS Code Marketplace, so it could not see Cursor-specific attacks. Even worse, version <code>2.1.312</code> on Open VSX was completely clean. The attacker slipped a backdoored build onto Cursor sharing the exact same version number as the legitimate release.
+      That incident is exactly why I built Cursor marketplace support into VoodooBox. At the time, my tracker only monitored the VS Code Marketplace, so it could not see Cursor-specific attacks. Even worse, the upstream build on Open VSX was completely clean. The attacker took advantage of the registry split by slipping a backdoored package onto Cursor that looked like the legitimate release.
     </p>
 
     <!-- DIAGRAM 2: CURSOR TAMPER CHECK & SLEEPER WATCH -->
