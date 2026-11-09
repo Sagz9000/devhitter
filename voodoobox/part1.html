@@ -296,7 +296,7 @@
     <!-- SECTION 2: ARCHITECTURE -->
     <h2>1. The Supply-Chain Architecture: Wide Intake, Narrow Detonation</h2>
     <p>
-      Running an extension inside a real Windows VM with a simulated developer session takes several minutes, and VoodooBox runs two dedicated sandbox VMs. Static code analysis, on the other hand, takes seconds of CPU time.
+      Running an extension inside a real Windows VM with a simulated developer session takes several minutes, whereas static code analysis takes seconds of CPU time.
     </p>
     <p>
       Everything in the supply-chain pipeline is built around one rule: <strong>watch everything cheaply, and spend VM time only on builds that earn it.</strong>
@@ -512,7 +512,7 @@
     <!-- SECTION 4: INSIDE STATIC TRIAGE, UNPACKING & THE CHAMBER -->
     <h2>3. Inside the Gate: Static Triage, Unpacking Loops &amp; The Chamber</h2>
     <p>
-      When a new or updated extension lands in the tracker, how does VoodooBox decide whether it deserves one of the two Windows VMs? It runs a fast <strong>7-phase static pipeline</strong>, calls on an <strong>isolated unpacking loop</strong> if code is heavily obfuscated, and only then escalates to a baited sandbox environment called <strong>The Chamber</strong>.
+      When a new or updated extension lands in the tracker, how does VoodooBox decide whether it deserves a VM run? It runs a fast <strong>7-phase static pipeline</strong>, calls on an <strong>isolated unpacking loop</strong> if code is heavily obfuscated, and only then escalates to a baited sandbox environment called <strong>The Chamber</strong>.
     </p>
 
     <!-- DIAGRAM 3: STATIC TRIAGE, UNPACKING & THE CHAMBER -->
