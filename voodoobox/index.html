@@ -556,7 +556,7 @@
 
           <rect x="280" y="126" width="220" height="66" rx="5" fill="rgba(56, 189, 248, 0.12)" stroke="#38bdf8"/>
           <text x="288" y="142" font-weight="600" fill="#38bdf8">AI Unpack Agent (if still opaque):</text>
-          <text x="288" y="157" font-size="10" fill="#f0f4f8">Local model in closed loop (max 36 turns)</text>
+          <text x="288" y="157" font-size="10" fill="#f0f4f8">Local model in a bounded tool loop</text>
           <text x="288" y="171" font-size="10" fill="#d2dae3">Runs safe Node stubs &amp; AST decoders</text>
           <text x="288" y="184" font-size="10" fill="#d2dae3">Outputs recovered payload as child task</text>
         </g>
@@ -601,7 +601,7 @@
         <strong>The Static Layer Unpacker:</strong> Runs inside an isolated REMnux container with no network access. It systematically walks through common script packing techniques (JavaScript packers, <code>atob</code> decoding, obfuscator.io string tables, PowerShell arithmetic folding, and batch de-chaining). Each decoded layer is saved and checked with signatures again.
       </li>
       <li>
-        <strong>The AI Unpack Agent:</strong> When a layer is too complex or uses custom cryptography that static rules cannot parse, the local AI Unpack Agent steps in. It operates in a strict, bounded tool loop (up to 36 turns). The agent can inspect the layer, run safe JavaScript emulators with recording stubs for Windows Script Host and ActiveX, or run constrained Python decoders. Once it isolates the inner executable or script, the recovered artifact loops back into the pipeline as a new child task.
+        <strong>The AI Unpack Agent:</strong> When a layer is too complex or uses custom cryptography that static rules cannot parse, the local AI Unpack Agent steps in. It operates in a bounded tool loop where it can inspect the layer, run safe JavaScript emulators with recording stubs for Windows Script Host and ActiveX, or run constrained Python decoders. Once it isolates the inner executable or script, the recovered artifact loops back into the pipeline as a new child task.
       </li>
       <li>
         <strong>Automated Learning:</strong> When the lab encounters recurring obfuscation tricks, an automated engineer cycle drafts a targeted decode plugin for that family. Once benchmarked against the corpus, the plugin joins the static unpacker so future samples peel open in milliseconds without needing agent turns.
